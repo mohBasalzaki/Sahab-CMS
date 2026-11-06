@@ -27,8 +27,8 @@ PHP 8.1+ · SQLite / MySQL · MIT · RTL & LTR · Arabic / English admin
 
 ### التثبيت
 ```bash
-git clone https://github.com/<you>/sahab-cms.git
-cd sahab-cms
+git clone https://github.com/mohBasalzaki/Sahab-CMS.git
+cd Sahab-CMS
 php -S 127.0.0.1:8080 index.php      # للتجربة المحلية
 ```
 ثم افتح `http://127.0.0.1:8080` ← معالج التثبيت (SQLite أو MySQL) ← `/admin`.
@@ -88,8 +88,8 @@ A **clean-slate** CMS: no content types or pages ship with it — you build your
 
 ### Install
 ```bash
-git clone https://github.com/<you>/sahab-cms.git
-cd sahab-cms
+git clone https://github.com/mohBasalzaki/Sahab-CMS.git
+cd Sahab-CMS
 php -S 127.0.0.1:8080 index.php
 ```
 Open `http://127.0.0.1:8080`, run the installer (SQLite or MySQL), then go to `/admin`. On shared hosting upload the whole folder (`vendor/` is included; Composer is not required).
