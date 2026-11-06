@@ -1,0 +1,20 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('المستخدمون') }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t('المستخدمون') }}</h1><a class="btn primary" href="{{ url('/admin/users/new') }}">{{ icon('plus', 16) }} {{ t('مستخدم جديد') }}</a></div>
+<table class="table cards">
+  <thead><tr><th>{{ t('الاسم') }}</th><th>{{ t('البريد') }}</th><th>{{ t('الدور') }}</th><th>{{ t('آخر دخول') }}</th><th></th></tr></thead>
+  <tbody>
+  {% for u in users %}
+    <tr>
+      <td data-label="{{ t('الاسم') }}"><strong>{{ u.name }}</strong></td>
+      <td data-label="{{ t('البريد') }}" dir="ltr" class="ltr-cell">{{ u.email }}</td>
+      <td data-label="{{ t('الدور') }}">{{ t(role_names[u.role]) }}</td>
+      <td data-label="{{ t('آخر دخول') }}">{{ u.last_login ? u.last_login|ar_date : '—' }}</td>
+      <td class="actions"><a class="btn sm" href="{{ url('/admin/users/' ~ u.id) }}">{{ t('تعديل') }}</a>
+        {% if u.id != user.id %}<form method="post" action="{{ url('/admin/users/' ~ u.id ~ '/delete') }}" data-confirm="{{ t('حذف المستخدم؟') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ t('حذف') }}</button></form>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

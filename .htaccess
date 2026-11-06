@@ -1,0 +1,22 @@
+# Sahab CMS ??? Apache front controller
+Options -Indexes
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# Never serve internals
+RewriteRule ^(core|vendor|storage|lang|install)(/|$) - [F,L]
+RewriteRule ^(config\.php|composer\.(json|lock))$ - [F,L]
+RewriteRule ^themes/[^/]+/templates/ - [F,L]
+RewriteRule ^themes/[^/]+/theme\.json$ - [F,L]
+RewriteRule ^themes/[^/]+/(source|site\.json) - [F,L]
+# Static files that exist are served directly
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+RewriteRule ^ index.php [L]
+</IfModule>
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+<IfModule mod_php.c>
+php_flag display_errors off
+</IfModule>
+

@@ -1,0 +1,79 @@
+/* Default theme — IBM Carbon design language: white canvas, blue #221cfc, navy ink #0a0178, 4px/6px corners, 1px hairlines, IBM Plex Sans Arabic. Light only. */
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:300;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-arabic-300-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:300;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-latin-300-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-arabic-600-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:600;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-arabic-500-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:700;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-arabic-700-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:"IBM Plex Sans Arabic";font-weight:700;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"IBM Plex Mono";font-weight:400;font-display:swap;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-weight:500;font-display:swap;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2")}
+:root{--canvas:#ffffff;--bg:#ffffff;--soft:#f1f1f7;--card:#eeedff;--ink:#0a0178;--body:#0a0178;--mute:#4a4870;--line:#dcdaf0;--line-strong:#8d8ab8;--blue:#221cfc;--blue-hover:#1913d6;--blue-60:#1913d6;--blue-50:#eeedff;--mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--canvas);color:var(--body);font:17px/1.9 "IBM Plex Sans Arabic","IBM Plex Sans","Segoe UI",Tahoma,system-ui,sans-serif}
+a{color:var(--ink);text-underline-offset:3px}
+img{max-width:100%;height:auto}
+h1,h2,h3{color:var(--ink);line-height:1.5}
+.mono,.logo .mono{font-family:var(--mono)}
+.wrap{max-width:960px;margin:0 auto;padding:0 1rem}
+.muted{color:var(--mute);font-size:.9rem}
+.site-header{background:var(--bg);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.bar{display:flex;align-items:center;gap:1rem;min-height:56px;flex-wrap:wrap}
+.logo{font-weight:700;color:var(--ink);text-decoration:none}
+.menu{display:flex;gap:.2rem;flex:1}.menu a{padding:.3rem .8rem;border-radius:4px;color:var(--body);text-decoration:none;font-weight:500}.menu a.on{color:var(--ink);box-shadow:inset 0 -2px var(--ink);border-radius:4px}.menu a:hover{color:var(--ink)}
+.mt,.burger{display:none}
+.search input{padding:.35rem .8rem;border:1px solid var(--line);border-radius:4px;background:var(--soft);color:var(--ink);font:inherit;width:160px}
+.search input:focus{outline:0;border-color:var(--ink);background:var(--bg)}
+.hero{padding:96px 0 48px}.hero h1{font-size:2.4rem;margin:.2rem 0;font-weight:700}.hero p{color:var(--mute);margin:0 0 1rem}
+.sec{margin:48px 0 8px;padding-top:12px;border-top:1px solid var(--line);font-size:1rem}.sec::before{content:"[+] ";font-family:var(--mono);color:var(--mute)}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin:1rem 0 3rem}
+.card{background:var(--bg);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.card:hover{border-color:var(--ink)}
+.card img{display:block;width:100%;height:170px;object-fit:cover}.card-body{padding:.9rem 1rem}.card h3{margin:.1rem 0;font-size:1.05rem}.card h3 a{text-decoration:none}.card p{margin:.4rem 0 0;color:var(--mute);font-size:.95rem;line-height:1.8}
+.entry{max-width:720px;margin:48px auto}.entry h1{font-size:2rem;margin:0 0 .3rem}.cover{border-radius:4px;margin:1.2rem 0}
+.body{font-size:1.05rem;color:var(--body)}.body blockquote{border-inline-start:3px solid var(--ink);margin-inline:0;padding-inline:1rem;color:var(--mute)}
+.body table{border-collapse:collapse;width:100%}.body td,.body th{border:1px solid var(--line);padding:.4rem .6rem}
+.body pre,.body code{font-family:var(--mono);background:var(--card);border-radius:4px}.body pre{padding:.8rem 1rem;overflow:auto}
+.pager{display:flex;gap:.4rem;justify-content:center;margin:2rem 0}.pager a{padding:.1rem .8rem;border:1px solid var(--line-strong);border-radius:4px;text-decoration:none}.pager a.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn,.sh-btn{display:inline-block;padding:.35rem 1.3rem;border-radius:4px;background:var(--ink);color:var(--bg);border:1px solid var(--ink);font:inherit;font-weight:500;cursor:pointer;text-decoration:none}
+.btn:hover,.sh-btn:hover{background:#0f0000}
+.sh-form{position:relative;max-width:560px;margin:1.5rem 0}.sh-field{margin-bottom:1rem}.sh-field label{display:block;font-weight:500;margin-bottom:.25rem;color:var(--ink);font-size:.95rem}
+.sh-field input,.sh-field textarea,.sh-field select{width:100%;padding:.5rem .75rem;border:1px solid var(--line);border-radius:4px;background:var(--soft);color:var(--ink);font:inherit}
+.sh-field input:focus,.sh-field textarea:focus,.sh-field select:focus{outline:0;border-color:var(--ink);background:var(--bg)}
+.sh-field input[type=checkbox]{width:auto}
+.sh-form-msg{padding:.6rem 1rem;border-radius:4px;margin-bottom:1rem;border:1px solid var(--line)}.sh-form-msg.ok{background:#e3f7e8;color:#1a6b30}.sh-form-msg.err{background:#ffe5e3;color:#a50011}
+.site-footer{border-top:1px solid var(--line);margin-top:96px;padding:1.5rem 0;color:var(--mute);text-align:center;font-size:.9rem}
+.site-footer nav a{margin:0 .6rem}
+.dz-main{display:block}
+@media (max-width:768px){
+ .burger{display:block;font-family:var(--mono);cursor:pointer;margin-inline-start:auto;padding:.3rem .7rem;border:1px solid var(--line-strong);border-radius:4px}
+ .menu,.search{display:none;width:100%;flex-direction:column}.mt:checked~.menu{display:flex}.mt:checked~.search{display:block}
+ .search input{width:100%;margin-bottom:.7rem}
+ .hero{padding:48px 0 24px}.hero h1{font-size:1.8rem}
+}
+
+/* square corners, ink links, underline on hover */
+
+a{color:var(--ink);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline;text-underline-offset:3px}
+.btn:hover,.sh-btn:hover,.pager a:hover{text-decoration:none}
+.btn,.sh-btn{color:var(--bg)}
+.card h3 a,.menu a,.logo,.site-footer a{color:var(--ink)}
+
+
+/* IBM Carbon structure, brand colors */
+body{font-weight:400}[dir=ltr] body{letter-spacing:.16px}
+h1{font-weight:300}
+a:hover{color:var(--blue-60)}
+.card{border:1px solid var(--line);border-radius:6px;box-shadow:none;background:var(--bg)}
+.btn,.sh-btn{background:var(--blue);border-color:var(--blue);color:#fff;border-radius:4px;padding:.7rem 1.2rem}
+.btn:hover,.sh-btn:hover{background:var(--blue-hover);border-color:var(--blue-hover)}
+.pager a{border-radius:4px}.pager a.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.menu a{border-radius:4px}.menu a.on{color:var(--ink);box-shadow:inset 0 -2px var(--blue)}
+.sh-field input,.sh-field textarea,.sh-field select,.search input{background:var(--soft);border:1px solid var(--line-strong);border-radius:4px}
+.sh-field input:focus,.sh-field textarea:focus,.sh-field select:focus{outline:2px solid var(--blue);outline-offset:-2px}
+.cover{border-radius:6px}
+.sh-form-msg{border-radius:4px}

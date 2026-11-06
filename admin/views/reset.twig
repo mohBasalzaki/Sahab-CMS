@@ -1,0 +1,20 @@
+{% extends 'auth_base.twig' %}
+{% block title %}{{ t('كلمة مرور جديدة') }}{% endblock %}
+{% block form %}
+<h1>{{ t('كلمة مرور جديدة') }}</h1>
+{% if valid %}
+  <p class="muted">{{ t('اختر كلمة مرور جديدة للحساب') }} <code dir="ltr">{{ account }}</code></p>
+  {% if error %}<div class="alert err" role="alert">{{ error }}</div>{% endif %}
+  <form method="post" action="{{ url('/admin/reset/' ~ token) }}">
+    {{ csrf_field() }}
+    <label for="password">{{ t('كلمة المرور الجديدة') }}</label>
+    <div class="pw-wrap"><input id="password" name="password" type="password" required minlength="8" autofocus autocomplete="new-password" dir="ltr"><button type="button" class="pw-toggle" data-pw-toggle aria-label="{{ t('إظهار كلمة المرور') }}">{{ icon('view', 18) }}</button></div>
+    <label for="confirm">{{ t('تأكيد كلمة المرور') }}</label>
+    <input id="confirm" name="confirm" type="password" required minlength="8" autocomplete="new-password" dir="ltr">
+    <button class="btn primary block" type="submit">{{ t('حفظ كلمة المرور') }}</button>
+  </form>
+{% else %}
+  <div class="alert err" role="alert">{{ t('رابط الاستعادة غير صالح أو انتهت صلاحيته.') }}</div>
+  <a class="btn primary block" href="{{ url('/admin/forgot') }}">{{ t('اطلب رابطاً جديداً') }}</a>
+{% endif %}
+{% endblock %}

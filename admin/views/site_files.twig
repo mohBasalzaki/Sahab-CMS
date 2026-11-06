@@ -1,0 +1,29 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ site.name }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ site.name }}</h1><span class="muted small">{{ t('عيّن كل صفحة لعرض، ثم افتح المعاينة لربط عناصرها بالمحتوى.') }}</span></div>
+  <a class="btn" href="{{ url('/admin/site') }}">{{ icon('back', 16) }} {{ t('الواجهة') }}</a></div>
+<table class="table cards">
+  <thead><tr><th>{{ t('الملف') }}</th><th>{{ t('يُعرض كـ') }}</th><th>{{ t('الروابط') }}</th><th></th></tr></thead>
+  <tbody>
+  {% for r in rows %}
+    {% set k = r.assign.kind %}
+    <tr>
+      <td data-label="{{ t('الملف') }}"><code dir="ltr">{{ r.file }}</code></td>
+      <td data-label="{{ t('يُعرض كـ') }}">
+        {% if k == 'home' %}<span class="badge">{{ t('الرئيسية') }}</span>
+        {% elseif k == 'archive' %}<span class="badge">{{ t('أرشيف') }} · {{ r.assign.type }}</span>
+        {% elseif k == 'single' %}<span class="badge">{{ t('مفردة') }} · {{ r.assign.type }}</span>
+        {% elseif k == 'static' %}<span class="badge">{{ t('ثابتة') }} · /{{ r.assign.slug }}</span>
+        {% else %}<span class="muted">{{ t('غير معيّنة') }}</span>{% endif %}
+      </td>
+      <td data-label="{{ t('الروابط') }}">{{ r.bindings }}</td>
+      <td class="actions"><a class="btn sm primary" href="{{ url('/admin/site/' ~ site.id ~ '/map') }}?f={{ r.file|url_encode }}">{{ icon('cursor', 15) }} {{ t('معاينة وربط') }}</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% if not site.active %}
+<form method="post" action="{{ url('/admin/site/' ~ site.id ~ '/activate') }}">{{ csrf_field() }}<button class="btn primary" type="submit">{{ t('تفعيل هذه الواجهة') }}</button></form>
+{% endif %}
+{% endblock %}

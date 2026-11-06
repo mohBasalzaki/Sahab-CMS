@@ -1,0 +1,27 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('لوحة التحكم') }}{% endblock %}
+{% block content %}
+<section class="hero-tui">
+  <div class="hero-row"><span class="logo-mark inv">{{ icon('layers', 20) }}</span><div><strong>{{ t('أهلاً') }} {{ user.name }}</strong><div class="hint">{{ site_title }} · Sahab CMS {{ version }} · PHP {{ php }} · {{ driver }}</div></div></div>
+</section>
+{% if types %}
+<div class="stats">
+  {% for ty in types %}
+    <a class="stat" href="{{ url('/admin/content/' ~ ty.slug) }}"><b>{{ ty.kind == 'single' ? '1' : ty.count }}</b><span>{{ ty.plural }}</span></a>
+  {% endfor %}
+  {% if can('media') %}<a class="stat" href="{{ url('/admin/media') }}"><b>{{ media_count }}</b><span>{{ t('ملفات الوسائط') }}</span></a>{% endif %}
+  {% if can('forms.view') %}<a class="stat {{ unread ? 'hot' : '' }}" href="{{ url('/admin/forms') }}"><b>{{ unread }}</b><span>{{ t('رسائل جديدة') }}</span></a>{% endif %}
+</div>
+{% set creatable = types|filter(x => x.can_create) %}
+{% if creatable %}
+<div class="card"><h2>{{ t('إنشاء سريع') }}</h2><div class="row-wrap">{% for ty in creatable %}<a class="btn primary" href="{{ url('/admin/content/' ~ ty.slug ~ '/new') }}">{{ icon('plus', 16) }} {{ ty.plural }}</a>{% endfor %}</div></div>
+{% endif %}
+{% else %}
+<div class="empty-state">
+  {{ icon('types', 40) }}
+  <h2>{{ t('نظامك فارغ ومفتوح لتخصيصك') }}</h2>
+  <p class="muted">{{ t('لا توجد أنواع محتوى جاهزة. ابدأ ببناء بنيتك: أنواع وحقول، ثم صمّم صفحاتها بصرياً، أو استورد موقعاً جاهزاً واربطه بالمحتوى.') }}</p>
+  {% if can('manage') %}<div class="row-wrap center-row"><a class="btn primary" href="{{ url('/admin/types') }}">{{ icon('types', 16) }} {{ t('منشئ الأنواع') }}</a><a class="btn" href="{{ url('/admin/site') }}">{{ icon('site', 16) }} {{ t('استيراد موقع') }}</a></div>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

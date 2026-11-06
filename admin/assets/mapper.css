@@ -1,0 +1,57 @@
+.mono-name{font-family:var(--mono);font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.top-select{width:auto;min-height:32px;padding:.1rem .5rem;font-size:.88rem;flex:none}
+.top-input{width:140px;min-height:32px;padding:.1rem .5rem;font-size:.88rem;flex:none}
+.ed-top{gap:.6rem}
+#m-save{margin-inline-start:auto}
+.m-chip{display:flex;align-items:center;gap:.4rem;padding:.35rem .5rem;border:1px solid var(--line);border-radius:var(--r-sm);margin-bottom:.35rem;cursor:pointer;font-size:.82rem;background:var(--bg)}
+.m-chip:hover{border-color:var(--ink)}
+.m-chip.on{border-color:var(--accent);background:var(--soft)}
+.m-chip .k{font-family:var(--mono);font-size:.72rem;background:var(--ink);color:var(--on-ink);border-radius:var(--r-sm);padding:0 .35rem;flex:none}
+.m-chip .src{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;text-align:start;color:var(--mute)}
+.m-chip button{border:0;background:none;color:var(--mute);cursor:pointer;padding:0;display:flex}
+.m-chip button:hover{color:var(--danger)}
+.m-sec{border-top:1px solid var(--line);padding-top:.5rem;margin-top:.7rem}
+.m-sec h4{margin:.1rem 0 .3rem;font-size:.85rem;display:flex;align-items:center;gap:.4rem}
+.m-el{font-family:var(--mono);font-size:.8rem;background:var(--soft);padding:.4rem .5rem;border-radius:var(--r-sm);word-break:break-all;direction:ltr;text-align:start}
+.m-hint{font-size:.78rem;color:var(--mute);margin:.2rem 0}
+.row-inline{display:flex;gap:.4rem;align-items:center}.row-inline>*{flex:1;min-width:0}
+.ed-stage .frame{width:100%}
+.layers-panel{padding:.4rem;overflow:auto}
+.lay-tog{width:18px;height:18px;border:0;background:none;padding:0;display:inline-flex;align-items:center;justify-content:center;color:var(--mute);cursor:pointer;flex:none}
+.lay-tag{font-family:var(--mono);font-size:.76rem;color:var(--ink);flex:none}
+.lay-row.on .lay-tag,.lay-row.on .lay-tog{color:var(--on-ink)}
+.lay-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.8rem;color:var(--mute)}
+.lay-row.on .lay-name{color:var(--on-ink)}
+.lay-bound{font-size:.68rem;background:var(--ok);color:#fff;padding:0 .35rem;flex:none}
+.lay-row{min-height:28px}
+
+/* spacing: every stacked control gets room */
+.m-sec>*+*{margin-top:.55rem}
+.m-sec{padding-top:.8rem;margin-top:1rem}
+.ed-panel>*+*{margin-top:.6rem}
+.layers-panel>*+*{margin-top:0}
+.lay-row{min-height:32px;margin-bottom:.2rem;padding-block:.25rem;gap:.45rem}
+.m-chip{margin-bottom:.4rem;padding:.45rem .6rem}
+.m-el{margin-bottom:.4rem}
+.row-inline{gap:.5rem}
+.f{margin:.5rem 0 .8rem}
+.ed-panel .btn.sm{margin-top:.1rem}
+.m-banner{margin:.7rem;padding:.7rem .8rem;border:1px solid var(--warn);background:var(--warn-bg);color:var(--ink);font-size:.85rem}
+.m-banner p{margin:.3rem 0 0}
+.cap-frame{position:absolute;inset-inline-start:-99999px;top:0;width:1280px;height:900px;border:0}
+.cap-box>*+*{margin-top:.8rem}
+
+.top-input.wide{width:200px}
+
+
+/* IBM Carbon */
+.m-chip{border-radius:var(--r-sm);border:1px solid var(--line);background:var(--bg)}
+.m-chip:hover{background:var(--hover)}
+.m-chip.on{background:var(--blue-50);border-color:var(--blue);box-shadow:none}
+.m-chip .k{background:var(--blue);border-radius:var(--r-sm)}
+.m-el{border-radius:var(--r-sm);background:var(--card)}
+.lay-bound{border-radius:var(--r-sm)}
+.m-banner{border-radius:var(--r-sm)}
+.m-field{border-radius:var(--r-sm);background:var(--soft);padding:.55rem;margin-bottom:.5rem;display:flex;flex-direction:column;gap:.4rem;border:1px solid var(--line)}
+.m-field .tok{font-size:.75rem;align-self:flex-start}
+.m-fields>.btn{margin-top:.2rem}

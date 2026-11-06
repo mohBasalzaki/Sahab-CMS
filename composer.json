@@ -1,0 +1,2 @@
+{"name":"sahab/cms","description":"Arabic-first lightweight CMS","type":"project","license":"MIT","require":{"php":">=8.1","twig/twig":"^3.8",
+        "masterminds/html5": "^2.12"},"autoload":{"psr-4":{"Sahab\\":"core/"}}}

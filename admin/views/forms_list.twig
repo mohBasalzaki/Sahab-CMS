@@ -1,0 +1,21 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('النماذج') }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t('النماذج والرسائل') }}</h1>{% if can('manage') %}<a class="btn primary" href="{{ url('/admin/forms/new') }}">{{ icon('plus', 16) }} {{ t('نموذج جديد') }}</a>{% endif %}</div>
+<table class="table cards">
+  <thead><tr><th>{{ t('النموذج') }}</th><th>{{ t('الرسائل') }}</th><th>{{ t('للتضمين في القالب') }}</th><th></th></tr></thead>
+  <tbody>
+  {% for f in forms %}
+    <tr>
+      <td data-label="{{ t('النموذج') }}"><strong>{{ f.name }}</strong></td>
+      <td data-label="{{ t('الرسائل') }}">{{ f.total|ar_digits }}{% if f.unread %} <span class="badge hot">{{ f.unread|ar_digits }} {{ t('جديدة') }}</span>{% endif %}</td>
+      <td data-label="{{ t('للتضمين في القالب') }}"><code dir="ltr">{{ '{{ form(\'' ~ f.slug ~ '\') }}' }}</code></td>
+      <td class="actions">
+        <a class="btn sm" href="{{ url('/admin/forms/' ~ f.id ~ '/submissions') }}">{{ t('الرسائل') }}</a>
+        {% if can('manage') %}<a class="btn sm" href="{{ url('/admin/forms/' ~ f.id) }}">{{ t('تعديل') }}</a>{% endif %}
+      </td>
+    </tr>
+  {% else %}<tr><td colspan="4" class="muted center">{{ t('لا توجد نماذج.') }}</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

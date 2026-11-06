@@ -1,0 +1,14 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('منشئ الأنواع') }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ t('منشئ الأنواع (Content-Type Builder)') }}</h1><span class="muted">{{ t('ابنِ بنية بيانات محتواك.') }}</span></div></div>
+<div class="empty-state">
+  {{ icon('types', 40) }}
+  <h2>{{ t('ابدأ من الصفر') }}</h2>
+  <p class="muted">{{ t('لا توجد أنواع محتوى. أنشئ نوعك الأول: صفحات، خدمات، مقالات، منتجات… أضف حقوله وفعّل المصمم المرئي إن أردت تصميم صفحاته.') }}</p>
+  <div class="row-wrap center-row">
+    <a class="btn primary" href="{{ url('/admin/types/new?kind=collection') }}">{{ icon('plus', 16) }} {{ t('نوع مجموعة (Collection)') }}</a>
+    <a class="btn" href="{{ url('/admin/types/new?kind=single') }}">{{ icon('plus', 16) }} {{ t('نوع مفرد (Single)') }}</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="{{ lang }}-u-nu-latn" dir="{{ dir }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{% block title %}{{ t('لوحة التحكم') }}{% endblock %} — {{ site_title }}</title>
+<link rel="stylesheet" href="{{ url('/admin/assets/admin.css') }}?v={{ av }}">
+<script src="{{ url('/admin/assets/theme.js') }}?v={{ av }}"></script>
+<script src="{{ url('/admin/assets/admin.js') }}?v={{ av }}" defer></script>
+<script src="{{ url('/admin/assets/tour.js') }}?v={{ av }}" defer></script>
+{% if i18n %}<script type="application/json" id="i18n-map">{{ i18n|raw }}</script><script src="{{ url('/admin/assets/i18n.js') }}?v={{ av }}"></script>{% endif %}
+</head>
+<body class="{{ subnav ? 'has-sub' : '' }}">
+<header class="topbar">
+  <button class="icon-btn" id="nav-toggle" aria-label="{{ t('القائمة') }}" aria-expanded="false" aria-controls="sidebar">{{ icon('menu', 20) }}</button>
+  <a class="brand" href="{{ url('/admin') }}">Sahab <span class="muted small">{{ site_title }}</span></a>
+  <button class="icon-btn help-btn" type="button" data-tour-start title="{{ t('جولة تعريفية لهذه الصفحة') }}">{{ t('؟') }}</button>
+  <button class="icon-btn" type="button" data-theme-toggle title="{{ t('الوضع الفاتح / الداكن') }}">{{ icon('moon', 18) }}</button>
+</header>
+<div class="shell">
+  <div class="sidebar" id="sidebar">
+    <nav class="rail" aria-label="{{ t('القائمة الرئيسية') }}">
+      <a class="side-brand" href="{{ url('/admin') }}"><span class="logo-mark">{{ icon('layers', 20) }}</span><span>{{ site_title }}<small>Sahab CMS</small></span></a>
+      {% for n in nav %}
+        {% if n.group is defined and n.group != (group|default('')) %}{% set group = n.group %}<div class="nav-group">{{ t(group) }}</div>{% endif %}
+        <a href="{{ url(n.url) }}" class="{{ n.active ? 'active' : '' }}">{{ icon(n.icon, 18) }}<span>{{ t(n.label) }}</span></a>
+      {% endfor %}
+      {% if user %}
+      <div class="nav-user">
+        <a href="{{ url('/admin/profile') }}">{{ icon('user', 18) }}<span>{{ user.name }} <small>({{ t(role_names[user.role]|default(user.role)) }})</small></span></a>
+        <div class="side-tools">
+          <button class="icon-btn help-btn" type="button" data-tour-start title="{{ t('جولة تعريفية لهذه الصفحة') }}">{{ t('؟') }}</button>
+          <button class="icon-btn" type="button" data-theme-toggle title="{{ t('الوضع الفاتح / الداكن') }}">{{ icon('moon', 18) }}</button>
+          <a class="icon-btn" href="{{ site_url }}" target="_blank" rel="noopener" title="{{ t('عرض الموقع') }}">{{ icon('external', 18) }}</a>
+          <form method="post" action="{{ url('/admin/logout') }}">{{ csrf_field() }}<button class="icon-btn" type="submit" title="{{ t('تسجيل الخروج') }}">{{ icon('logout', 18) }}</button></form>
+        </div>
+      </div>
+      {% endif %}
+    </nav>
+    {% if subnav %}
+    <nav class="subnav" aria-label="{{ t(subnav.title) }}">
+      <h2 class="sub-title">{{ t(subnav.title) }}</h2>
+      {% for g in subnav.groups %}
+        <div class="sub-group">
+          <div class="sub-head"><span>{{ t(g.label) }}</span>{% if g.count is not null %}<b>{{ g.count }}</b>{% endif %}</div>
+          {% for i in g.items %}<a href="{{ url(i.url) }}" class="{{ i.active ? 'active' : '' }}">{{ t(i.label) }}</a>{% else %}{% if g.empty %}<p class="muted small sub-empty">{{ t(g.empty) }}</p>{% endif %}{% endfor %}
+          {% if g.action %}<a class="sub-action" href="{{ url(g.action.url) }}">{{ icon('plus', 15) }} {{ t(g.action.label) }}</a>{% endif %}
+        </div>
+      {% endfor %}
+    </nav>
+    {% endif %}
+  </div>
+  <div class="scrim" id="scrim"></div>
+  <main class="main">
+    {% if flash %}<div class="alert {{ flash.type }}" role="status">{{ flash.text }}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>

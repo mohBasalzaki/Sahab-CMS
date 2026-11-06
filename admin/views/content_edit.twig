@@ -1,0 +1,87 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ id ? t('تعديل') : t('جديد') }} — {{ type.name }}{% if can_delete and id %}<form id="del-form" method="post" action="{{ url('/admin/content/' ~ type.slug ~ '/' ~ id ~ '/delete') }}" data-confirm="{{ t('حذف هذا المحتوى نهائياً؟') }}">{{ csrf_field() }}</form>{% endif %}
+{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>{{ is_single ? type.plural : (id ? t('تعديل') ~ ' ' ~ type.name : t('إنشاء') ~ ' ' ~ type.name) }}</h1>
+    <span class="muted small">{% if id %}ID {{ id }} · {% endif %}<span class="badge {{ raw.status|default('draft') }}">{{ raw.status|default('draft') == 'published' ? 'Published' : 'Draft' }}</span></span></div>
+  <div class="row-wrap">
+    {% if design_url %}<a class="btn" href="{{ design_url }}">{{ icon('brush', 16) }} {{ t('فتح المصمم') }}</a>{% endif %}
+    {% if preview_url %}<a class="btn" href="{{ preview_url }}" target="_blank" rel="noopener">{{ t('معاينة') }}</a>{% endif %}
+    {% if not is_single %}<a class="btn" href="{{ url('/admin/content/' ~ type.slug) }}">{{ t('القائمة') }}</a>{% endif %}
+    {% if raw.status|default('draft') == 'published' and can_publish %}<button form="entry-form" class="btn" type="submit" name="action" value="unpublish">{{ t('إلغاء النشر') }}</button>{% endif %}
+    <button form="entry-form" class="btn" type="submit" name="action" value="save">{{ t('حفظ') }}</button>
+    {% if can_publish %}<button form="entry-form" class="btn primary" type="submit" name="action" value="publish">{{ t('نشر') }}</button>{% endif %}
+  </div>
+</div>
+{% for e in errors %}<div class="alert err" role="alert">{{ e }}</div>{% endfor %}
+<form method="post" class="edit-grid" id="entry-form" novalidate>
+  {{ csrf_field() }}
+  <div class="col-main card">
+    <label for="title">{{ t('العنوان') }} *</label>
+    <input id="title" name="title" required value="{{ raw.title|default('') }}" data-slug-source>
+
+    {% for f in type.fields %}
+      {% set val = raw['f_' ~ f.name]|default('') %}
+      {% set fid = 'f_' ~ f.name %}
+      <div class="field" data-type="{{ f.type }}">
+      {% if f.type == 'boolean' %}
+        <input type="hidden" name="f[{{ f.name }}]" value="0">
+        <label class="check"><input type="checkbox" name="f[{{ f.name }}]" value="1" {{ val ? 'checked' }}> {{ f.label }}</label>
+      {% else %}
+        <label for="{{ fid }}">{{ f.label }}{{ f.required ? ' *' }}</label>
+        {% if f.type == 'text' %}<input id="{{ fid }}" name="f[{{ f.name }}]" maxlength="255" value="{{ val }}">
+        {% elseif f.type == 'textarea' %}<textarea id="{{ fid }}" name="f[{{ f.name }}]" rows="4">{{ val }}</textarea>
+        {% elseif f.type == 'richtext' %}<textarea id="{{ fid }}" name="f[{{ f.name }}]" rows="10" data-rte>{{ val }}</textarea>
+        {% elseif f.type == 'number' %}<input id="{{ fid }}" name="f[{{ f.name }}]" type="text" inputmode="decimal" dir="ltr" value="{{ val }}">
+        {% elseif f.type == 'date' %}<input id="{{ fid }}" name="f[{{ f.name }}]" type="date" dir="ltr" value="{{ val }}">
+        {% elseif f.type == 'datetime' %}<input id="{{ fid }}" name="f[{{ f.name }}]" type="datetime-local" dir="ltr" value="{{ val|replace({' ': 'T'}) }}">
+        {% elseif f.type == 'email' %}<input id="{{ fid }}" name="f[{{ f.name }}]" type="email" dir="ltr" value="{{ val }}">
+        {% elseif f.type == 'url' %}<input id="{{ fid }}" name="f[{{ f.name }}]" type="url" dir="ltr" value="{{ val }}">
+        {% elseif f.type == 'select' %}
+          <select id="{{ fid }}" name="f[{{ f.name }}]"><option value="">—</option>{% for o in f.options %}<option value="{{ o }}" {{ val == o ? 'selected' }}>{{ o }}</option>{% endfor %}</select>
+        {% elseif f.type == 'json' %}<textarea id="{{ fid }}" name="f[{{ f.name }}]" rows="5" dir="ltr" class="mono">{{ val }}</textarea>
+        {% elseif f.type == 'media' %}
+          <div class="media-field" data-media-field data-multiple="{{ f.multiple ? 1 : 0 }}">
+            <input type="hidden" name="f[{{ f.name }}]" value="{{ val }}" data-media-input>
+            <div class="media-preview" data-media-preview>
+              {% for mid in val|split(',')|filter(x => x != '') %}{% set m = mediaMap[mid] %}{% if m %}
+                <figure data-id="{{ m.id }}">{% if m.is_image %}<img src="{{ m.thumb }}" alt="">{% else %}<span class="file-ico">📄</span>{% endif %}<figcaption>{{ m.original }}</figcaption><button type="button" class="rm" aria-label="{{ t('إزالة') }}">×</button></figure>
+              {% endif %}{% endfor %}
+            </div>
+            <button type="button" class="btn sm" data-media-pick data-url="{{ url('/admin/media') }}">{{ t('اختيار من الوسائط') }}</button>
+          </div>
+        {% elseif f.type == 'relation' %}
+          {% set sel = val|split(',') %}
+          <select id="{{ fid }}" name="f[{{ f.name }}]{{ f.multiple ? '[]' }}" {{ f.multiple ? 'multiple size="6"' }}>
+            {% if not f.multiple %}<option value="">—</option>{% endif %}
+            {% for o in rel[f.name]|default([]) %}<option value="{{ o.id }}" {{ (o.id ~ '') in sel ? 'selected' }}>{{ o.title }}</option>{% endfor %}
+          </select>
+        {% endif %}
+      {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <aside class="col-side">
+    <div class="card">
+      <p class="side-title">Information</p>
+      <ul class="info-list">
+        <li><span>{{ t('الحالة') }}</span><span class="badge {{ raw.status|default('draft') }}">{{ raw.status|default('draft') == 'published' ? 'Published' : 'Draft' }}</span></li>
+        {% if raw.created_at is defined %}<li><span>{{ t('أُنشئ') }}</span><span>{{ raw.created_at|ar_date }}</span></li>{% endif %}
+        {% if raw.updated_at is defined %}<li><span>{{ t('آخر تعديل') }}</span><span>{{ raw.updated_at|ar_date }}</span></li>{% endif %}
+      </ul>
+      <label for="slug">{{ t('الرابط (slug)') }}</label>
+      <input id="slug" name="slug" value="{{ raw.slug|default('') }}" dir="ltr" data-slug-target placeholder="{{ t('يُولَّد تلقائياً') }}">
+      <label for="published_at">{{ t('تاريخ النشر') }}</label>
+      <input id="published_at" name="published_at" type="datetime-local" dir="ltr" value="{{ raw.published_at|default('')|replace({' ': 'T'}) }}">
+      {% if not can_publish %}<p class="muted small">{{ t('ليست لديك صلاحية النشر؛ سيُحفظ كمسودة.') }}</p>{% endif %}
+    </div>
+    {% if can_delete and id %}
+    <button form="del-form" class="btn danger block" type="submit">{{ t('حذف المدخل') }}</button>
+    {% endif %}
+  </aside>
+</form>
+{% if can_delete and id %}<form id="del-form" method="post" action="{{ url('/admin/content/' ~ type.slug ~ '/' ~ id ~ '/delete') }}" data-confirm="{{ t('حذف هذا المحتوى نهائياً؟') }}">{{ csrf_field() }}</form>{% endif %}
+<div hidden id="rte-icons">{% for n in ['bold','italic','underline','h2','h3','paragraph','listbullet','listnumber','quote','link','image','clearformat'] %}<span data-ic="{{ n }}">{{ icon(n, 18) }}</span>{% endfor %}</div>
+{% endblock %}

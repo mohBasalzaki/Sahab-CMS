@@ -1,0 +1,43 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ type.plural }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>{{ type.plural }}</h1><span class="muted small">{{ res.total|ar_digits }} {{ t('مدخل') }} · <code dir="ltr">/api/{{ type.slug }}</code></span></div>
+  {% if can.create %}<a class="btn primary" href="{{ url('/admin/content/' ~ type.slug ~ '/new') }}">{{ icon('plus', 16) }} {{ t('إنشاء مدخل جديد') }}</a>{% endif %}
+</div>
+<form class="filters" method="get">
+  <input type="search" name="q" value="{{ q }}" placeholder="{{ t('بحث...') }}">
+  <select name="status">
+    <option value="">{{ t('كل الحالات') }}</option>
+    <option value="published" {{ status == 'published' ? 'selected' }}>{{ t('منشور') }}</option>
+    <option value="draft" {{ status == 'draft' ? 'selected' }}>{{ t('مسودة') }}</option>
+  </select>
+  <button class="btn" type="submit">{{ t('تصفية') }}</button>
+</form>
+<table class="table cards">
+  <thead><tr><th>ID</th><th>{{ t('العنوان') }}</th><th>{{ t('الحالة') }}</th><th>{{ t('آخر تعديل') }}</th><th></th></tr></thead>
+  <tbody>
+  {% for e in res.items %}
+    <tr>
+      <td data-label="ID" class="mono">{{ e.id }}</td>
+      <td data-label="{{ t('العنوان') }}">{% if can.update %}<a href="{{ url('/admin/content/' ~ type.slug ~ '/' ~ e.id) }}"><strong>{{ e.title }}</strong></a>{% else %}<strong>{{ e.title }}</strong>{% endif %}<br><small class="muted mono" dir="ltr">/{{ e.slug }}</small></td>
+      <td data-label="{{ t('الحالة') }}"><span class="badge {{ e.status }}">{{ e.status == 'published' ? 'Published' : 'Draft' }}</span></td>
+      <td data-label="{{ t('آخر تعديل') }}">{{ e.updated_at|ar_date }}</td>
+      <td class="actions">
+        {% if can.update %}<a class="btn sm" href="{{ url('/admin/content/' ~ type.slug ~ '/' ~ e.id) }}">{{ t('تعديل') }}</a>{% endif %}
+        {% if can.delete %}<form method="post" action="{{ url('/admin/content/' ~ type.slug ~ '/' ~ e.id ~ '/delete') }}" data-confirm="{{ t('حذف هذا المحتوى نهائياً؟') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ t('حذف') }}</button></form>{% endif %}
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="5" class="muted center">{{ t('لا يوجد محتوى بعد.') }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% if res.pages > 1 %}
+<nav class="pager">
+  {% if res.page > 1 %}<a class="btn sm" href="?page={{ res.page - 1 }}&q={{ q|url_encode }}&status={{ status }}">{{ icon('back', 15) }} {{ t('السابق') }}</a>{% endif %}
+  <span>{{ res.page }} / {{ res.pages }}</span>
+  {% if res.page < res.pages %}<a class="btn sm" href="?page={{ res.page + 1 }}&q={{ q|url_encode }}&status={{ status }}">{{ t('التالي') }} {{ icon('next', 15) }}</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'layout.twig' %}
+{% block title %}API{% endblock %}
+{% block content %}
+<h1>{{ t('واجهة REST API') }}</h1>
+{% if new_token %}
+<div class="alert ok"><strong>{{ t('انسخ المفتاح الآن، لن يظهر مرة أخرى:') }}</strong><br><input readonly value="{{ new_token }}" dir="ltr" data-select></div>
+{% endif %}
+<div class="card">
+  <h2>{{ t('نقاط الوصول') }}</h2>
+  <p class="muted small">{{ t('الوصول العام يحدده دور «عام» في الأدوار والصلاحيات. المفاتيح تمنح وصولاً كاملاً (قراءة، أو قراءة وكتابة):') }} <code dir="ltr">Authorization: Bearer TOKEN</code></p>
+  <pre class="code" dir="ltr">GET    {{ api_base }}/{type}?filters[title][$contains]=word&amp;sort=published_at:desc
+                     &amp;pagination[page]=1&amp;pagination[pageSize]=25&amp;status=draft
+GET    {{ api_base }}/{type}/{id|slug}
+POST   {{ api_base }}/{type}        {"data": {...}}   (token, write)
+PUT    {{ api_base }}/{type}/{id}   {"data": {...}}   (token, write)
+DELETE {{ api_base }}/{type}/{id}                     (token, write)
+GET    {{ api_base }}/content-types                   (schema)
+
+Single types: GET|PUT|DELETE {{ api_base }}/{type}
+Filters: $eq $ne $lt $lte $gt $gte $contains $in $notIn $null</pre>
+  <p class="small">{% for ty in types %}<code dir="ltr">{{ api_base }}/{{ ty.slug }}</code> {% endfor %}</p>
+</div>
+<form method="post" action="{{ url('/admin/api/tokens') }}" class="card">
+  {{ csrf_field() }}
+  <h2>{{ t('مفتاح جديد') }}</h2>
+  <div class="grid-2"><div><label>{{ t('الاسم') }}</label><input name="name" required></div>
+  <div class="checks"><label class="check"><input type="checkbox" name="can_write" value="1"> {{ t('صلاحية الكتابة') }}</label></div></div>
+  <button class="btn primary" type="submit">{{ t('إنشاء') }}</button>
+</form>
+<table class="table cards">
+  <thead><tr><th>{{ t('الاسم') }}</th><th>{{ t('الصلاحية') }}</th><th>{{ t('آخر استخدام') }}</th><th></th></tr></thead>
+  <tbody>{% for tk in tokens %}<tr>
+    <td data-label="{{ t('الاسم') }}">{{ tk.name }}</td>
+    <td data-label="{{ t('الصلاحية') }}">{{ tk.can_write ? t('قراءة وكتابة') : t('قراءة') }}</td>
+    <td data-label="{{ t('آخر استخدام') }}">{{ tk.last_used ? tk.last_used|ar_date : '—' }}</td>
+    <td class="actions"><form method="post" action="{{ url('/admin/api/tokens/' ~ tk.id ~ '/delete') }}" data-confirm="{{ t('حذف المفتاح؟') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ t('حذف') }}</button></form></td>
+  </tr>{% else %}<tr><td colspan="4" class="muted center">{{ t('لا توجد مفاتيح.') }}</td></tr>{% endfor %}</tbody>
+</table>
+{% endblock %}

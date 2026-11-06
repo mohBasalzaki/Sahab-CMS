@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="{{ lang }}-u-nu-latn" dir="{{ dir }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{% block title %}{{ t('تسجيل الدخول') }}{% endblock %} — {{ site_title }}</title>
+<link rel="stylesheet" href="{{ url('/admin/assets/admin.css') }}?v={{ av }}">
+<script src="{{ url('/admin/assets/theme.js') }}?v={{ av }}"></script>
+<script src="{{ url('/admin/assets/auth.js') }}?v={{ av }}" defer></script>
+{% if i18n %}<script type="application/json" id="i18n-map">{{ i18n|raw }}</script><script src="{{ url('/admin/assets/i18n.js') }}?v={{ av }}"></script>{% endif %}
+</head>
+<body class="auth-page">
+<main class="auth-split">
+  <aside class="auth-brand" aria-hidden="false">
+    <div class="auth-brand-top"><span class="logo-mark inv">{{ icon('layers', 22) }}</span><span class="auth-site">{{ site_title }}</span></div>
+    <div class="auth-brand-body">
+      <h2>{{ t('أنشئ نظامك بنفسك') }}</h2>
+      <p>{{ t('نمذجة المحتوى، مصمم صفحات بصري، واستيراد المواقع الجاهزة وربطها ببياناتك، في نظام واحد خفيف.') }}</p>
+      <ul class="auth-points">
+        <li>{{ icon('types', 18) }}<span>{{ t('أنواع محتوى وحقول بلا حدود') }}</span></li>
+        <li>{{ icon('brush', 18) }}<span>{{ t('مصمم صفحات بالسحب والإفلات') }}</span></li>
+        <li>{{ icon('site', 18) }}<span>{{ t('استيراد موقع جاهز وربط عناصره بالمحتوى') }}</span></li>
+      </ul>
+    </div>
+    <small class="auth-brand-foot">Sahab CMS</small>
+  </aside>
+  <section class="auth-panel">
+    <div class="auth-box">
+      <div class="auth-mobile-logo"><span class="logo-mark">{{ icon('layers', 22) }}</span><strong>{{ site_title }}</strong></div>
+      {% block form %}{% endblock %}
+    </div>
+    <button class="icon-btn auth-theme" type="button" data-theme-toggle title="{{ t('الوضع الفاتح / الداكن') }}">{{ icon('moon', 18) }}</button>
+  </section>
+</main>
+</body>
+</html>

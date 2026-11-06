@@ -1,0 +1,54 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('الإعدادات') }}{% endblock %}
+{% block content %}
+<h1>{{ t('الإعدادات والقوائم') }}</h1>
+{% for e in errors %}<div class="alert err" role="alert">{{ e }}</div>{% endfor %}
+<form method="post" novalidate autocomplete="off">
+  {{ csrf_field() }}
+  <div class="card">
+    <h2>{{ t('الموقع') }}</h2>
+    <div class="grid-2">
+      <div><label>{{ t('عنوان الموقع') }}</label><input name="site_title" value="{{ s.site_title }}" required></div>
+      <div><label>{{ t('لغة لوحة الإدارة') }}</label><select name="lang"><option value="ar" {{ s.lang == 'ar' ? 'selected' }}>العربية</option><option value="en" {{ s.lang == 'en' ? 'selected' }}>English</option></select></div>
+  <div><label>{{ t('لغة الموقع') }}</label><select name="site_lang"><option value="">{{ t('نفس لغة اللوحة') }}</option><option value="ar" {{ s.site_lang == 'ar' ? 'selected' }}>العربية (RTL)</option><option value="en" {{ s.site_lang == 'en' ? 'selected' }}>English (LTR)</option></select><small class="muted">{{ t('تُحقن في وسم html (lang وdir) لكل صفحات الموقع.') }}</small></div>
+      <div><label>{{ t('الصفحة الرئيسية') }}</label><select name="home_page"><option value="">{{ t('الصفحة الرئيسية للواجهة') }}</option>{% for p in pages %}<option value="{{ p.slug }}" {{ s.home_page == p.slug ? 'selected' }}>{{ p.title }}</option>{% endfor %}</select></div>
+      <div><label>{{ t('عدد العناصر في الصفحة') }}</label><input name="posts_per_page" type="text" inputmode="numeric" dir="ltr" value="{{ s.posts_per_page }}"></div>
+      <div><label>{{ t('أقصى حجم رفع (ميجابايت)') }}</label><input name="upload_max_mb" type="text" inputmode="numeric" dir="ltr" value="{{ s.upload_max_mb }}"></div>
+    </div>
+    <label>{{ t('وصف الموقع') }}</label><input name="site_description" value="{{ s.site_description }}">
+  </div>
+  <div class="card">
+    <h2>{{ t('القوائم') }}</h2>
+    <p class="muted small">{{ t('سطر لكل رابط بالشكل: العنوان|الرابط — مثال:') }} <code dir="ltr">المقالات|/post</code>. {{ t('في القالب:') }} <code dir="ltr">menu('main')</code></p>
+    <label>{{ t('القائمة الرئيسية') }} (main)</label><textarea name="menu_main" rows="5">{{ s.menu_main }}</textarea>
+    <label>{{ t('قائمة التذييل') }} (footer)</label><textarea name="menu_footer" rows="3">{{ s.menu_footer }}</textarea>
+  </div>
+  <div class="card">
+    <h2>{{ t('البريد') }}</h2>
+    <p class="muted small">{{ t('اترك خادم SMTP فارغاً لاستخدام دالة mail() في PHP.') }}</p>
+    <div class="grid-2">
+      <div><label>{{ t('بريد المرسل') }}</label><input name="mail_from" type="email" dir="ltr" value="{{ s.mail_from }}"></div>
+      <div><label>SMTP {{ t('الخادم') }}</label><input name="smtp_host" dir="ltr" value="{{ s.smtp_host }}"></div>
+      <div><label>SMTP {{ t('المنفذ') }}</label><input name="smtp_port" type="text" inputmode="numeric" dir="ltr" value="{{ s.smtp_port }}"></div>
+      <div><label>{{ t('التشفير') }}</label><select name="smtp_secure">{% for o in ['tls', 'ssl', 'none'] %}<option value="{{ o }}" {{ s.smtp_secure == o ? 'selected' }}>{{ o|upper }}</option>{% endfor %}</select></div>
+      <div><label>SMTP {{ t('المستخدم') }}</label><input name="smtp_user" dir="ltr" value="{{ s.smtp_user }}" autocomplete="off"></div>
+      <div><label>SMTP {{ t('كلمة المرور') }}</label><input name="smtp_pass" type="password" dir="ltr" autocomplete="new-password" placeholder="{{ smtp_pass_set ? '••••••••' : '' }}"></div>
+    </div>
+  </div>
+  <button class="btn primary" type="submit">{{ t('حفظ الإعدادات') }}</button>
+</form>
+
+<section class="card danger-zone" id="reset">
+  <h3>{{ icon('trash', 18) }} {{ t('استعادة النظام للوضع الافتراضي') }}</h3>
+  <p class="muted">{{ t('يحذف كل أنواع المحتوى والمدخلات والتصاميم والكتل والنماذج والرسائل والوسائط والمواقع المستوردة والمستخدمين الآخرين ومفاتيح API وWebhooks، ويعيد الإعدادات إلى قيمها الأولى. يبقى حسابك ولغة اللوحة وعنوان الموقع فقط.') }}</p>
+  <p><strong>{{ t('لا يمكن التراجع عن هذا الإجراء.') }}</strong> {{ t('خذ نسخة احتياطية من قاعدة البيانات ومجلد uploads أولاً.') }}</p>
+  <form method="post" action="{{ url('/admin/settings/reset') }}" data-confirm="{{ t('سيتم حذف جميع البيانات نهائياً. هل أنت متأكد؟') }}">
+    {{ csrf_field() }}
+    <div class="grid-2">
+      <div><label for="rs-confirm">{{ t('اكتب RESET لتأكيد الحذف') }}</label><input id="rs-confirm" name="confirm" dir="ltr" autocomplete="off" placeholder="RESET" required></div>
+      <div><label for="rs-pass">{{ t('كلمة مرورك الحالية') }}</label><input id="rs-pass" name="password" type="password" dir="ltr" autocomplete="current-password" required></div>
+    </div>
+    <button class="btn danger" type="submit">{{ icon('trash', 16) }} {{ t('حذف جميع البيانات واستعادة الوضع الافتراضي') }}</button>
+  </form>
+</section>
+{% endblock %}

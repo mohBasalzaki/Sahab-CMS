@@ -1,0 +1,53 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ id ? form.name : t('نموذج جديد') }}{% endblock %}
+
+{% macro row(i, f, types) %}
+<div class="frow card inner" data-row>
+  <div class="grid-2">
+    <div><label>{{ t('اسم الحقل (إنجليزي)') }}</label><input name="fields[{{ i }}][name]" value="{{ f.name|default('') }}" dir="ltr" pattern="[a-z][a-z0-9_]*" required></div>
+    <div><label>{{ t('العنوان الظاهر') }}</label><input name="fields[{{ i }}][label]" value="{{ f.label|default('') }}" required></div>
+    <div><label>{{ t('النوع') }}</label><select name="fields[{{ i }}][type]" data-ftype>{% for k, v in types %}<option value="{{ k }}" {{ f.type|default('text') == k ? 'selected' }}>{{ t(v) }}</option>{% endfor %}</select></div>
+    <div class="checks"><label class="check"><input type="checkbox" name="fields[{{ i }}][required]" value="1" {{ f.required|default(false) ? 'checked' }}> {{ t('مطلوب') }}</label></div>
+  </div>
+  <div data-show="select"><label>{{ t('الخيارات (سطر لكل خيار)') }}</label><textarea name="fields[{{ i }}][options]" rows="3">{{ f.options is defined ? f.options|join("\n") : '' }}</textarea></div>
+  <div class="row-wrap"><button type="button" class="btn sm" data-move="-1" aria-label="{{ t('أعلى') }}">{{ icon('up', 15) }}</button><button type="button" class="btn sm" data-move="1" aria-label="{{ t('أسفل') }}">{{ icon('down', 15) }}</button><button type="button" class="btn sm danger" data-remove>{{ t('حذف الحقل') }}</button></div>
+</div>
+{% endmacro %}
+
+{% block content %}
+{% import _self as m %}
+<div class="page-head"><h1>{{ id ? t('تعديل النموذج') : t('نموذج جديد') }}</h1><a class="btn" href="{{ url('/admin/forms') }}">{{ t('القائمة') }}</a></div>
+{% for e in errors %}<div class="alert err" role="alert">{{ e }}</div>{% endfor %}
+<form method="post" novalidate>
+  {{ csrf_field() }}
+  <div class="card">
+    <div class="grid-2">
+      <div><label>{{ t('اسم النموذج') }} *</label><input name="name" value="{{ form.name }}" required></div>
+      <div><label>{{ t('المعرّف (إنجليزي)') }} *</label><input name="slug" value="{{ form.slug }}" dir="ltr" pattern="[a-z0-9][a-z0-9_\-]*" required></div>
+      <div><label>{{ t('إرسال الرسائل إلى بريد') }}</label><input name="email_to" type="email" dir="ltr" value="{{ form.email_to }}"></div>
+      <div><label>{{ t('نص زر الإرسال') }}</label><input name="submit_label" value="{{ form.submit_label }}"></div>
+    </div>
+    <label>{{ t('رسالة النجاح') }}</label><input name="success_msg" value="{{ form.success_msg }}">
+  </div>
+  <h2>{{ t('حقول النموذج') }}</h2>
+  <div id="field-rows">{% for f in form.fields %}{{ m.row(loop.index0, f, field_types) }}{% endfor %}</div>
+  <template id="field-tpl">{{ m.row('__i__', {}, field_types) }}</template>
+  <div class="row-wrap sticky-actions"><button type="button" class="btn" id="add-field">{{ icon('plus', 16) }} {{ t('إضافة حقل') }}</button><button class="btn primary" type="submit">{{ t('حفظ') }}</button></div>
+</form>
+{% if id %}
+<section class="danger-zone">
+  <div class="dz-head">
+    <span class="dz-ico">{{ icon('alert', 22) }}</span>
+    <div><h2>{{ t('منطقة الخطر') }}</h2><p class="muted">{{ t('حذف النموذج يحذف كل الرسائل المستلمة عبره نهائياً، ولا يمكن التراجع عنه.') }}</p></div>
+  </div>
+  <form method="post" action="{{ url('/admin/forms/' ~ id ~ '/delete') }}" class="dz-form" data-confirm="{{ t('حذف النموذج وكل رسائله؟') }}" data-confirm-slug="{{ form.slug }}">
+    {{ csrf_field() }}
+    <label for="confirm-del">{{ t('اكتب المعرّف') }} <code dir="ltr">{{ form.slug }}</code> {{ t('لتأكيد الحذف') }}</label>
+    <div class="dz-row">
+      <input id="confirm-del" name="confirm" dir="ltr" autocomplete="off" placeholder="{{ form.slug }}">
+      <button class="btn danger" type="submit" disabled>{{ icon('trash', 16) }} {{ t('حذف النموذج نهائياً') }}</button>
+    </div>
+  </form>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ t('معاينة وربط') }} — {{ file }}</title>
+<link rel="stylesheet" href="{{ url('/admin/assets/admin.css') }}?v={{ av }}">
+<link rel="stylesheet" href="{{ url('/admin/assets/editor.css') }}?v={{ av }}">
+<link rel="stylesheet" href="{{ url('/admin/assets/mapper.css') }}?v={{ av }}">
+<script src="{{ url('/admin/assets/theme.js') }}?v={{ av }}"></script>
+<script src="{{ url('/admin/assets/mapper.js') }}?v={{ av }}" defer></script>
+<script src="{{ url('/admin/assets/tour.js') }}?v={{ av }}" defer></script>
+{% if i18n %}<script type="application/json" id="i18n-map">{{ i18n|raw }}</script><script src="{{ url('/admin/assets/i18n.js') }}?v={{ av }}"></script>{% endif %}
+</head>
+<body class="ed">
+<header class="ed-top">
+  <a class="btn sm" id="m-back" href="{{ url('/admin/site/' ~ site.id) }}" title="{{ t('رجوع') }}">{{ icon('back', 16) }}</a>
+  <strong class="mono-name" dir="ltr" id="m-file">{{ file }}</strong>
+  <input id="m-bname" class="top-input wide" hidden aria-label="{{ t('اسم الكتلة') }}" placeholder="{{ t('اسم الكتلة') }}">
+  <span class="badge" id="m-blockbadge" hidden>{{ t('وضع الكتلة') }}</span>
+  <select id="a-kind" class="top-select" aria-label="{{ t('يُعرض كـ') }}">
+    <option value="none">{{ t('غير معيّنة') }}</option>
+    <option value="home">{{ t('الصفحة الرئيسية') }}</option>
+    <option value="archive">{{ t('أرشيف نوع محتوى') }}</option>
+    <option value="single">{{ t('صفحة مدخل (مفردة)') }}</option>
+    <option value="static">{{ t('صفحة ثابتة') }}</option>
+  </select>
+  <select id="a-type" class="top-select" hidden aria-label="type"></select>
+  <input id="a-slug" class="top-input" hidden dir="ltr" placeholder="about" aria-label="slug">
+  <span id="m-saved" class="muted small"></span>
+  <button type="button" class="btn sm ed-only-narrow" id="tog-right">{{ icon('cursor', 16) }}</button>
+  <button type="button" class="btn sm help-btn" data-tour-start title="{{ t('جولة تعريفية') }}">؟</button>
+  <button type="button" class="btn sm" id="m-capture" title="{{ t('تشغيل JS الموقع والتقاط النتيجة') }}">{{ icon('repeat', 16) }} {{ t('التقاط الصفحة') }}</button>
+  <button type="button" class="btn sm primary" id="m-save">{{ icon('save', 16) }} {{ t('حفظ') }}</button>
+</header>
+<div class="ed-body">
+  <aside class="ed-left" id="m-left">
+    <div class="tabs" role="tablist"><button type="button" class="on" data-ltab="layers">{{ t('الطبقات') }}</button><button type="button" data-ltab="binds">{{ t('الروابط') }}</button></div>
+    <div class="m-banner" id="m-banner" hidden><strong>{{ t('هذه الصفحة تُبنى بـ JavaScript') }}</strong><p>{{ t('محتواها غير موجود في ملف HTML. اضغط «التقاط الصفحة» لتشغيلها مرة واحدة وحفظ النتيجة لتتمكن من ربط عناصرها.') }}</p></div>
+    <div class="ed-panel layers-panel" id="p-layers" role="tree"></div>
+    <div class="ed-panel" id="p-binds" hidden>
+      <div class="f"><span>{{ t('عنوان الصفحة <title>') }}</span><select id="m-title"></select></div>
+      <div class="f"><span>{{ t('وصف الصفحة (meta)') }}</span><select id="m-desc"></select></div>
+      <div class="sec-title">{{ t('العناصر المربوطة') }}</div>
+      <div id="m-list"></div>
+    </div>
+  </aside>
+  <main class="ed-stage"><div class="frame"><iframe id="frame" title="preview"></iframe></div></main>
+  <aside class="ed-right" id="ed-right">
+    <div class="tabs"><button type="button" class="on">{{ t('العنصر المحدد') }}</button></div>
+    <div class="ed-panel" id="m-inspect"><p class="muted">{{ t('انقر أي عنصر في المعاينة لربطه.') }}</p></div>
+  </aside>
+</div>
+<script type="application/json" id="boot">{{ boot|raw }}</script>
+</body>
+</html>

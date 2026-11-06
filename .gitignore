@@ -1,0 +1,11 @@
+/config.php
+/storage/*
+!/storage/.htaccess
+/uploads/*
+!/uploads/.htaccess
+# imported sites are user data; only the bundled theme ships
+/themes/*
+!/themes/default
+/dist/
+.DS_Store
+Thumbs.db

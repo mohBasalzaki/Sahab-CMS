@@ -1,0 +1,17 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ id ? u.name : t('مستخدم جديد') }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ id ? t('تعديل مستخدم') : t('مستخدم جديد') }}</h1><a class="btn" href="{{ url('/admin/users') }}">{{ t('القائمة') }}</a></div>
+{% for e in errors %}<div class="alert err" role="alert">{{ e }}</div>{% endfor %}
+<form method="post" class="card narrow" autocomplete="off">
+  {{ csrf_field() }}
+  <label>{{ t('الاسم') }}</label><input name="name" value="{{ u.name }}" required>
+  <label>{{ t('البريد الإلكتروني') }}</label><input name="email" type="email" dir="ltr" value="{{ u.email }}" required>
+  <label>{{ t('الدور') }}</label>
+  <select name="role">{% for k, v in role_names %}<option value="{{ k }}" {{ u.role == k ? 'selected' }}>{{ t(v) }}</option>{% endfor %}</select>
+  <p class="muted small">{{ t('المدير: كل شيء · المحرر: كل المحتوى والوسائط · الكاتب: محتواه فقط · المشاهد: عرض فقط') }}</p>
+  <label>{{ t('كلمة المرور') }}{{ id ? ' (' ~ t('اتركها فارغة لعدم التغيير') ~ ')' }}</label>
+  <input name="password" type="password" dir="ltr" minlength="8" autocomplete="new-password" {{ id ? '' : 'required' }}>
+  <button class="btn primary block" type="submit">{{ t('حفظ') }}</button>
+</form>
+{% endblock %}

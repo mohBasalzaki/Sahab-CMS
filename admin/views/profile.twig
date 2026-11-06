@@ -1,0 +1,15 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('ملفي الشخصي') }}{% endblock %}
+{% block content %}
+<h1>{{ t('ملفي الشخصي') }}</h1>
+{% for e in errors %}<div class="alert err" role="alert">{{ e }}</div>{% endfor %}
+<form method="post" class="card narrow" autocomplete="off">
+  {{ csrf_field() }}
+  <label>{{ t('الاسم') }}</label><input name="name" value="{{ user.name }}" required>
+  <label>{{ t('البريد الإلكتروني') }}</label><input value="{{ user.email }}" dir="ltr" disabled>
+  <h2>{{ t('تغيير كلمة المرور') }}</h2>
+  <label>{{ t('كلمة المرور الحالية') }}</label><input name="current" type="password" dir="ltr" autocomplete="current-password">
+  <label>{{ t('كلمة المرور الجديدة') }}</label><input name="password" type="password" dir="ltr" minlength="8" autocomplete="new-password">
+  <button class="btn primary block" type="submit">{{ t('حفظ') }}</button>
+</form>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ code }}{% endblock %}
+{% block content %}
+<div class="card center"><h1>{{ code }}</h1><p>{{ message }}</p><a class="btn" href="{{ url('/admin') }}">{{ t('العودة للوحة التحكم') }}</a></div>
+{% endblock %}

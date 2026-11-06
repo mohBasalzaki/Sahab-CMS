@@ -1,0 +1,42 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('الواجهة') }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ t('واجهة الموقع') }}</h1><span class="muted small">{{ t('استورد موقعاً جاهزاً (HTML/CSS/JS) وحوّله إلى واجهة ديناميكية تعرض محتواك.') }}</span></div></div>
+
+<form method="post" action="{{ url('/admin/site/upload') }}" enctype="multipart/form-data" class="card upload-card" data-site-upload>
+  {{ csrf_field() }}
+  <h2>{{ icon('upload', 18) }} {{ t('استيراد موقع') }}</h2>
+  <div class="grid-2">
+    <div><label>{{ t('اسم الموقع') }}</label><input name="name" placeholder="my-site"></div>
+    <div><label for="zip">{{ t('ملف مضغوط zip') }}</label><input id="zip" type="file" name="zip" accept=".zip"></div>
+  </div>
+  <p class="muted small center">{{ t('أو') }}</p>
+  <label for="files">{{ t('ملفات HTML و CSS و JS والصور') }}</label>
+  <input id="files" type="file" name="files[]" multiple accept=".html,.htm,.css,.js,.json,.svg,.png,.jpg,.jpeg,.gif,.webp,.avif,.ico,.woff,.woff2,.ttf,.otf,.mp4,.webm">
+  <label class="check"><input type="checkbox" id="as-folder"> {{ t('اختيار مجلد كامل') }}</label>
+  <button class="btn primary" type="submit">{{ icon('upload', 16) }} {{ t('رفع واستيراد') }}</button>
+  <ol class="steps small muted">
+    <li>{{ t('ارفع الموقع ثم عيّن كل ملف HTML لعرض: الرئيسية، أرشيف نوع، صفحة مفردة، أو صفحة ثابتة.') }}</li>
+    <li>{{ t('افتح المعاينة وانقر أي نص أو صورة أو قائمة واربطها بحقل أو قائمة محتوى.') }}</li>
+    <li>{{ t('فعّل الواجهة، وتُنشر الأصول والقوالب تلقائياً.') }}</li>
+  </ol>
+</form>
+
+<div class="theme-grid">
+  {% for s in sites %}
+  <article class="card theme {{ s.active ? 'active' }}">
+    <div class="shot">{{ icon(s.imported is defined and s.imported ? 'site' : 'layout', 40) }}</div>
+    <h3>{{ t(s.name) }} <small class="muted">{{ s.imported is defined and s.imported ? '' : '· ' ~ t('مدمجة') }}</small></h3>
+    <p class="muted small">{{ t(s.description) }}</p>
+    <div class="row-wrap">
+      {% if s.active %}<span class="badge published">{{ t('مفعّل') }}</span>{% else %}
+      <form method="post" action="{{ url('/admin/site/' ~ s.id ~ '/activate') }}">{{ csrf_field() }}<button class="btn sm primary" type="submit">{{ t('تفعيل') }}</button></form>{% endif %}
+      {% if s.imported is defined and s.imported %}
+        <a class="btn sm" href="{{ url('/admin/site/' ~ s.id) }}">{{ icon('edit', 15) }} {{ t('الصفحات والربط') }}</a>
+        {% if not s.active %}<form method="post" action="{{ url('/admin/site/' ~ s.id ~ '/delete') }}" data-confirm="{{ t('حذف الموقع المستورد؟') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ icon('trash', 15) }}</button></form>{% endif %}
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

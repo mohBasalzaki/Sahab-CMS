@@ -1,0 +1,101 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ is_new ? t('نوع محتوى جديد') : form.name }}{% endblock %}
+
+{% macro row(i, f, field_types, all_types, locked) %}
+<div class="frow card inner" data-row>
+  <div class="frow-head"><span class="ftag" data-ftag>{{ f.type|default('text') }}</span> <span data-flabel>{{ f.label|default('') }}</span></div>
+  <div class="grid-2">
+    <div><label>{{ t('اسم الحقل (إنجليزي)') }}</label><input name="fields[{{ i }}][name]" value="{{ f.name|default('') }}" dir="ltr" pattern="[a-z][a-z0-9_]*" {{ locked ? 'readonly' }} required></div>
+    <div><label>{{ t('العنوان الظاهر') }}</label><input name="fields[{{ i }}][label]" value="{{ f.label|default('') }}" data-label-input required></div>
+    <div><label>{{ t('النوع') }}</label>
+      <select name="fields[{{ i }}][type]" data-ftype {{ locked ? 'disabled' }}>
+        {% for k, v in field_types %}<option value="{{ k }}" {{ f.type|default('text') == k ? 'selected' }}>{{ t(v[0]) }}</option>{% endfor %}
+      </select>{% if locked %}<input type="hidden" name="fields[{{ i }}][type]" value="{{ f.type }}">{% endif %}
+    </div>
+    <div class="checks">
+      <label class="check"><input type="checkbox" name="fields[{{ i }}][required]" value="1" {{ f.required|default(false) ? 'checked' }}> {{ t('مطلوب') }}</label>
+      <label class="check" data-show="media relation"><input type="checkbox" name="fields[{{ i }}][multiple]" value="1" {{ f.multiple|default(false) ? 'checked' }}> {{ t('متعدد') }}</label>
+    </div>
+  </div>
+  <div data-show="select"><label>{{ t('الخيارات (سطر لكل خيار)') }}</label><textarea name="fields[{{ i }}][options]" rows="3">{{ f.options is defined ? (f.options is iterable ? f.options|join("\n") : f.options) : '' }}</textarea></div>
+  <div data-show="relation"><label>{{ t('النوع المستهدف') }}</label>
+    <select name="fields[{{ i }}][target]">{% for t2 in all_types %}<option value="{{ t2.slug }}" {{ f.target|default('') == t2.slug ? 'selected' }}>{{ t2.plural }}</option>{% endfor %}</select></div>
+  <div class="row-wrap">
+    <button type="button" class="btn sm" data-move="-1">{{ icon('up', 15) }}</button>
+    <button type="button" class="btn sm" data-move="1">{{ icon('down', 15) }}</button>
+    <button type="button" class="btn sm danger" data-remove>{{ t('حذف الحقل') }}</button>
+  </div>
+</div>
+{% endmacro %}
+
+{% block content %}
+{% import _self as m %}
+<a class="goback" href="{{ url('/admin/types') }}">{{ icon('back', 16) }} {{ t('رجوع') }}</a>
+<div class="page-head">
+  <div><h1>{{ is_new ? t('نوع محتوى جديد') : form.name }}</h1><span class="muted">{{ t('ابنِ بنية بيانات محتواك.') }}</span></div>
+  {% if not is_new and form.designer and can('design') %}<a class="btn" href="{{ url('/admin/design/type/' ~ form.slug) }}">{{ icon('brush', 16) }} {{ t('تصميم قالب النوع') }}</a>{% endif %}
+</div>
+{% for e in errors %}<div class="alert err" role="alert">{{ e }}</div>{% endfor %}
+{% if is_new and presets %}
+<section class="card presets">
+  <h2>{{ icon('layers', 18) }} {{ t('ابدأ من نموذج جاهز') }}</h2>
+  <p class="muted small">{{ t('اختر نوعاً شائعاً لتعبئة الحقول تلقائياً، ثم عدّل ما تريد قبل الحفظ.') }}</p>
+  <div class="preset-grid">
+    {% for p in presets %}
+    <button type="button" class="preset" data-preset="{{ p.key }}">
+      {{ icon(p.icon, 20) }}<strong>{{ p.label }}</strong><span class="muted small">{{ p.desc }}</span>
+    </button>
+    {% endfor %}
+    <button type="button" class="preset" data-preset="">{{ icon('plus', 20) }}<strong>{{ t('نوع فارغ') }}</strong><span class="muted small">{{ t('ابنِ حقولك بنفسك') }}</span></button>
+  </div>
+  <script type="application/json" id="presets">{{ presets_json|raw }}</script>
+</section>
+{% endif %}<form method="post" novalidate id="type-form">
+  {{ csrf_field() }}
+  <div class="card">
+    {% if is_new %}
+    <div class="kind-pick">
+      <label><input type="radio" name="kind" value="collection" {{ form.kind != 'single' ? 'checked' }}> <strong>{{ t('نوع مجموعة (Collection)') }}</strong><br><span class="muted small">{{ t('عدة مدخلات: مقالات، منتجات، فعاليات…') }}</span></label>
+      <label><input type="radio" name="kind" value="single" {{ form.kind == 'single' ? 'checked' }}> <strong>{{ t('نوع مفرد (Single)') }}</strong><br><span class="muted small">{{ t('مدخل واحد: الصفحة الرئيسية، من نحن، إعدادات…') }}</span></label>
+    </div>
+    {% else %}
+    <p><span class="badge">{{ form.kind == 'single' ? 'Single type' : 'Collection type' }}</span> <code dir="ltr">/api/{{ form.slug }}</code></p>
+    {% endif %}
+    <div class="grid-2">
+      <div><label>{{ t('الاسم (مفرد)') }} *</label><input name="name" value="{{ form.name }}" required></div>
+      <div><label>{{ t('الاسم (جمع)') }}</label><input name="plural" value="{{ form.plural }}"></div>
+      <div><label>{{ t('المعرّف (إنجليزي)') }} *</label><input name="slug" value="{{ form.slug }}" dir="ltr" pattern="[a-z][a-z0-9_]*" {{ is_new ? '' : 'readonly' }} required></div>
+    </div>
+    <label class="check designer-toggle"><input type="checkbox" name="designer" value="1" {{ form.designer ? 'checked' }}> <span><strong>{{ icon('brush', 16) }} {{ t('تفعيل المصمم المرئي') }}</strong><br><span class="muted small">{{ t('يظهر زر «فتح المصمم» داخل كل مدخل لتصميم صفحته بالسحب والإفلات، ويمكن ربط العناصر بحقوله.') }}</span></span></label>
+    <p class="muted small">{{ t('الحقول الأساسية (العنوان، الرابط، الحالة، تاريخ النشر) تُضاف تلقائياً، والمسودة/النشر (Draft & Publish) مفعّل دائماً.') }}</p>
+  </div>
+  <div class="sec-title">{{ t('الحقول') }}</div>
+  <div id="field-rows">
+    {% for f in form.fields %}{{ m.row(loop.index0, f, field_types, all_types, not is_new) }}{% endfor %}
+  </div>
+  <template id="field-tpl">{{ m.row('__i__', {}, field_types, all_types, false) }}</template>
+  <div id="type-picker" class="picker" hidden>
+    {% for k, v in field_types %}<button type="button" data-pick="{{ k }}"><b>{{ k }}</b><span>{{ t(v[0]) }}</span></button>{% endfor %}
+  </div>
+  <div class="row-wrap sticky-actions">
+    <button type="button" class="btn" id="add-field">{{ icon('plus', 16) }} {{ t('إضافة حقل آخر') }}</button>
+    <button class="btn primary" type="submit">{{ t('حفظ') }}</button>
+  </div>
+</form>
+{% if not is_new %}
+<section class="danger-zone">
+  <div class="dz-head">
+    <span class="dz-ico">{{ icon('alert', 22) }}</span>
+    <div><h2>{{ t('منطقة الخطر') }}</h2><p class="muted">{{ t('حذف النوع يحذف جدوله وكل مدخلاته وتصاميمها نهائياً، ولا يمكن التراجع عنه.') }}</p></div>
+  </div>
+  <form method="post" action="{{ url('/admin/types/' ~ form.slug ~ '/delete') }}" class="dz-form" data-confirm="{{ t('سيتم حذف النوع وكل محتواه نهائياً. متأكد؟') }}" data-confirm-slug="{{ form.slug }}">
+    {{ csrf_field() }}
+    <label for="confirm-del">{{ t('اكتب المعرّف') }} <code dir="ltr">{{ form.slug }}</code> {{ t('لتأكيد الحذف') }}</label>
+    <div class="dz-row">
+      <input id="confirm-del" name="confirm" dir="ltr" autocomplete="off" placeholder="{{ form.slug }}">
+      <button class="btn danger" type="submit" disabled>{{ icon('trash', 16) }} {{ t('حذف النوع نهائياً') }}</button>
+    </div>
+  </form>
+</section>
+{% endif %}
+{% endblock %}

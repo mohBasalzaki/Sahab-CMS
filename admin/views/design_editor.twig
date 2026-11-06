@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="{{ lang }}-u-nu-latn" dir="{{ dir }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ t('مصمم الصفحات') }} — {{ d.title }}</title>
+<link rel="stylesheet" href="{{ url('/admin/assets/admin.css') }}?v={{ av }}">
+<link rel="stylesheet" href="{{ url('/admin/assets/editor.css') }}?v={{ av }}">
+<script src="{{ url('/admin/assets/theme.js') }}?v={{ av }}"></script>
+<script src="{{ url('/admin/assets/editor.js') }}?v={{ av }}" defer></script>
+<script src="{{ url('/admin/assets/tour.js') }}?v={{ av }}" defer></script>
+{% if i18n %}<script type="application/json" id="i18n-map">{{ i18n|raw }}</script><script src="{{ url('/admin/assets/i18n.js') }}?v={{ av }}"></script>{% endif %}
+</head>
+<body class="ed">
+<header class="ed-top">
+  <a class="btn sm" href="{{ back }}" title="{{ t('رجوع') }}">{{ icon('back', 16) }}</a>
+  <input id="d-title" class="ed-title" value="{{ d.title }}" aria-label="{{ t('العنوان') }}">
+  <span class="badge {{ d.status }}" id="d-status">{{ d.status == 'published' ? t('منشور') : t('مسودة') }}</span>
+  <div class="ed-bp" role="group" aria-label="{{ t('نقطة الاستجابة') }}">
+    <button type="button" data-bp="desktop" class="on" title="Desktop">{{ icon('desktop', 17) }}</button>
+    <button type="button" data-bp="tablet" title="Tablet ≤991px">{{ icon('tablet', 17) }}</button>
+    <button type="button" data-bp="mobile" title="Mobile ≤767px">{{ icon('mobile', 17) }}</button>
+  </div>
+  <div class="ed-hist">
+    <button type="button" id="undo" class="btn sm" title="Ctrl+Z">{{ icon('undo', 16) }}</button>
+    <button type="button" id="redo" class="btn sm" title="Ctrl+Y">{{ icon('redo', 16) }}</button>
+  </div>
+  <span id="d-saved" class="muted small"></span>
+  <button type="button" class="btn sm ed-only-narrow" id="tog-left">{{ icon('plus', 16) }}</button>
+  <button type="button" class="btn sm ed-only-narrow" id="tog-right">{{ icon('brush', 16) }}</button>
+  <button type="button" class="btn sm help-btn" data-tour-start title="{{ t('جولة تعريفية') }}">؟</button>
+  <a class="btn sm" id="d-view" href="#" target="_blank" rel="noopener">{{ icon('view', 16) }}</a>
+  <button type="button" class="btn sm" id="d-save">{{ icon('save', 16) }} {{ t('حفظ') }}</button>
+  <button type="button" class="btn sm primary" id="d-publish">{{ icon('publish', 16) }} {{ t('نشر') }}</button>
+</header>
+<div class="ed-body">
+  <aside class="ed-left" id="ed-left">
+    <div class="tabs" role="tablist"><button type="button" class="on" data-ltab="add">{{ t('عناصر') }}</button><button type="button" data-ltab="blocks">{{ t('كتل') }}</button><button type="button" data-ltab="layers">{{ t('الطبقات') }}</button></div>
+    <div class="ed-panel" id="p-add"></div>
+    <div class="ed-panel" id="p-blocks" hidden></div>
+    <div class="ed-panel" id="p-layers" hidden></div>
+  </aside>
+  <main class="ed-stage" id="ed-stage">
+    <div class="frame" id="frame"><iframe id="canvas" src="{{ url('/admin/design/' ~ d.id ~ '/canvas') }}" title="canvas"></iframe></div>
+  </main>
+  <aside class="ed-right" id="ed-right">
+    <div class="tabs" role="tablist"><button type="button" class="on" data-rtab="style">{{ t('التنسيق') }}</button><button type="button" data-rtab="settings">{{ t('الإعدادات') }}</button><button type="button" data-rtab="page">{{ t('الصفحة') }}</button>{% if d.kind == 'block' %}<button type="button" data-rtab="fields">{{ t('حقول الكتلة') }}</button>{% endif %}</div>
+    <div class="ed-sel" id="ed-sel"></div>
+    <div class="ed-panel" id="p-style"></div>
+    <div class="ed-panel" id="p-settings" hidden></div>
+    <div class="ed-panel" id="p-page" hidden></div>
+    {% if d.kind == 'block' %}<div class="ed-panel" id="p-fields" hidden></div>{% endif %}
+  </aside>
+</div>
+<script type="application/json" id="boot">{{ boot|raw }}</script>
+</body>
+</html>

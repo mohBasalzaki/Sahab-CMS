@@ -1,0 +1,11 @@
+{% extends 'base.twig' %}
+{% block title %}{{ entry.title }} — {{ site.title }}{% endblock %}
+{% block description %}{{ (entry.summary|default(entry.body|default('')))|excerpt(160) }}{% endblock %}
+{% block content %}
+<article class="entry">
+  <h1>{{ entry.title }}</h1>
+  {% if entry.published_at %}<time class="muted">{{ entry.published_at|ar_date }} · {{ entry.published_at|hijri }}</time>{% endif %}
+  {% if entry.cover %}<img class="cover" src="{{ entry.cover.url }}" alt="{{ entry.cover.alt|default(entry.title) }}">{% endif %}
+  <div class="body">{{ entry.body }}</div>
+</article>
+{% endblock %}

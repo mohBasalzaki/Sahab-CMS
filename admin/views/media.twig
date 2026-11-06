@@ -1,0 +1,29 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('الوسائط') }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t('مكتبة الوسائط') }} <small class="muted">({{ res.total|ar_digits }})</small></h1></div>
+<form method="post" action="{{ url('/admin/media/upload') }}" enctype="multipart/form-data" class="card" id="upload-form">
+  {{ csrf_field() }}
+  <label for="files">{{ t('رفع ملفات (صور، PDF، فيديو، صوت)') }}</label>
+  <input id="files" type="file" name="files[]" multiple required accept="image/*,application/pdf,video/mp4,video/webm,audio/mpeg,text/plain,text/csv">
+  <button class="btn primary" type="submit">{{ t('رفع') }}</button>
+</form>
+<form class="filters" method="get"><input type="search" name="q" value="{{ q }}" placeholder="{{ t('بحث بالاسم...') }}"><button class="btn" type="submit">{{ t('بحث') }}</button></form>
+<div class="media-grid">
+  {% for m in res.items %}
+  <figure class="media-item">
+    <a href="{{ m.url }}" target="_blank" rel="noopener">{% if m.is_image %}<img src="{{ m.thumb }}" alt="{{ m.alt }}" loading="lazy">{% else %}<span class="file-ico">📄</span>{% endif %}</a>
+    <figcaption><span class="name" title="{{ m.original }}">{{ m.original }}</span><small class="muted">{{ m.size|bytes }}{% if m.width %} · {{ m.width }}×{{ m.height }}{% endif %}</small></figcaption>
+    <form method="post" action="{{ url('/admin/media/' ~ m.id ~ '/update') }}" class="alt-form">{{ csrf_field() }}<input name="alt" value="{{ m.alt }}" placeholder="{{ t('نص بديل') }}"><button class="btn sm" type="submit">✓</button></form>
+    <form method="post" action="{{ url('/admin/media/' ~ m.id ~ '/delete') }}" data-confirm="{{ t('حذف الملف نهائياً؟') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ t('حذف') }}</button></form>
+    <input class="copy" readonly value="{{ m.url }}" dir="ltr" data-select>
+  </figure>
+  {% else %}<p class="muted">{{ t('لا توجد ملفات بعد.') }}</p>{% endfor %}
+</div>
+{% if res.pages > 1 %}
+<nav class="pager">
+  {% set cur = app_page|default(1) %}
+  {% for p in 1..res.pages %}<a class="btn sm" href="?page={{ p }}&q={{ q|url_encode }}">{{ p|ar_digits }}</a>{% endfor %}
+</nav>
+{% endif %}
+{% endblock %}

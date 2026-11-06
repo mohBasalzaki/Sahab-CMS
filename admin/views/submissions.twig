@@ -1,0 +1,14 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ form.name }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ form.name }} <small class="muted">({{ total|ar_digits }})</small></h1>
+  <div class="row-wrap"><a class="btn" href="{{ url('/admin/forms/' ~ form.id ~ '/export') }}">{{ t('تصدير CSV') }}</a><a class="btn" href="{{ url('/admin/forms') }}">{{ t('النماذج') }}</a></div></div>
+{% for s in items %}
+<article class="card sub">
+  <header><strong>#{{ s.id }}</strong> <span class="muted small">{{ s.created_at|ar_date }} · <span dir="ltr">{{ s.created_at|slice(11, 5) }} · {{ s.ip }}</span></span>
+    {% if can('manage') %}<form method="post" action="{{ url('/admin/submissions/' ~ s.id ~ '/delete') }}" data-confirm="{{ t('حذف الرسالة؟') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ t('حذف') }}</button></form>{% endif %}</header>
+  <dl>{% for f in form.fields %}<dt>{{ f.label }}</dt><dd>{{ s.data[f.name]|default('')|nl2br }}</dd>{% endfor %}</dl>
+</article>
+{% else %}<p class="muted">{{ t('لا توجد رسائل بعد.') }}</p>{% endfor %}
+{% if pages > 1 %}<nav class="pager">{% for p in 1..pages %}<a class="btn sm {{ p == page ? 'primary' }}" href="?page={{ p }}">{{ p|ar_digits }}</a>{% endfor %}</nav>{% endif %}
+{% endblock %}

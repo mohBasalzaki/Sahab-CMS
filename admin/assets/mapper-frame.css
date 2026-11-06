@@ -1,0 +1,12 @@
+[data-sp]:hover{outline:1px dashed #221cfc!important;outline-offset:-1px;cursor:pointer!important}
+.sp-sel{outline:2px solid #221cfc!important;outline-offset:-2px}
+[data-bound]{box-shadow:inset 0 0 0 2px rgba(48,209,88,.9)!important}
+[data-bound=repeat]{box-shadow:inset 0 0 0 2px rgba(255,159,10,.95)!important}
+[data-bound=menu]{box-shadow:inset 0 0 0 2px rgba(175,82,222,.95)!important}
+[data-bound=remove]{opacity:.3!important}
+a,button{pointer-events:auto}
+
+/* The preview runs without the site's JS: undo typical "hidden until JS runs" states so the content is readable. */
+[class*="preloader"],[class*="page-loader"],#loader,#preloader,.loading-screen{display:none!important}
+html,body{overflow:visible!important;height:auto!important}
+[class*="reveal"],[class*="fade-"],[class*="fade_"],[data-aos],[data-reveal],[data-animate],[class*="appear"],.js-reveal,.wow,.lazy-hidden{opacity:1!important;visibility:visible!important;transform:none!important;filter:none!important;clip-path:none!important}

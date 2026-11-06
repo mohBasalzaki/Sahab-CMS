@@ -1,0 +1,30 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ role.name }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t('صلاحيات') }}: {{ t(role.name) }}</h1><a class="btn" href="{{ url('/admin/roles') }}">{{ t('الأدوار') }}</a></div>
+{% set is_public = role.slug == 'public' %}
+<form method="post">
+  {{ csrf_field() }}
+  {% if not role.is_system %}
+  <div class="card grid-2"><div><label>{{ t('الاسم') }}</label><input name="name" value="{{ role.name }}"></div><div><label>{{ t('الوصف') }}</label><input name="description" value="{{ role.description }}"></div></div>
+  {% endif %}
+  <div class="sec-title">{{ t('أنواع المحتوى') }}{% if is_public %} <span class="muted small">— {{ t('الزوار: العرض فقط') }}</span>{% endif %}</div>
+  <div class="scroll-x"><table class="matrix">
+    <thead><tr><th>{{ t('النوع') }}</th>{% for k, label in actions %}{% if not is_public or k == 'read' %}<th>{{ t(label) }}<br><span class="mono">{{ k }}</span></th>{% endif %}{% endfor %}</tr></thead>
+    <tbody>
+    {% for ty in types %}
+      <tr><td><strong>{{ ty.plural }}</strong> <code dir="ltr">{{ ty.slug }}</code></td>
+      {% for k, label in actions %}{% if not is_public or k == 'read' %}<td><input type="checkbox" name="perm[{{ ty.slug }}][{{ k }}]" value="1" {{ has[ty.slug][k] is defined ? 'checked' }} aria-label="{{ ty.slug }} {{ k }}"></td>{% endif %}{% endfor %}</tr>
+    {% else %}<tr><td colspan="6" class="muted">{{ t('لا توجد أنواع.') }}</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  {% if not is_public %}
+  <div class="sec-title">{{ t('صلاحيات النظام') }}</div>
+  <div class="card">
+    {% for k, label in system %}<label class="check"><input type="checkbox" name="perm[system][{{ k }}]" value="1" {{ has.system[k] is defined ? 'checked' }}> {{ t(label) }} <code>{{ k }}</code></label>{% endfor %}
+    <p class="muted small">{{ t('إدارة الأنواع والمستخدمين والإعدادات والثيمات والإضافات حكر على دور المدير.') }}</p>
+  </div>
+  {% endif %}
+  <button class="btn primary" type="submit">{{ t('حفظ الصلاحيات') }}</button>
+</form>
+{% endblock %}

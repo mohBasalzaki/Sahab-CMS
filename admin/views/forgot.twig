@@ -1,0 +1,18 @@
+{% extends 'auth_base.twig' %}
+{% block title %}{{ t('استعادة كلمة المرور') }}{% endblock %}
+{% block form %}
+<a class="goback" href="{{ url('/admin/login') }}">{{ icon('back', 16) }} {{ t('العودة لتسجيل الدخول') }}</a>
+<h1>{{ t('استعادة كلمة المرور') }}</h1>
+{% if sent %}
+  <div class="alert ok" role="status">{{ t('إن كان هذا البريد مسجلاً لدينا، فقد أرسلنا إليه رابطاً لاختيار كلمة مرور جديدة. الرابط صالح لمدة ساعة.') }}</div>
+  <p class="muted small">{{ t('لم يصلك شيء؟ تحقق من البريد المزعج، أو تأكد من إعدادات البريد في الإعدادات.') }}</p>
+{% else %}
+  <p class="muted">{{ t('أدخل بريدك الإلكتروني وسنرسل لك رابطاً لاختيار كلمة مرور جديدة.') }}</p>
+  <form method="post" action="{{ url('/admin/forgot') }}">
+    {{ csrf_field() }}
+    <label for="email">{{ t('البريد الإلكتروني') }}</label>
+    <input id="email" name="email" type="email" required autofocus autocomplete="username" dir="ltr" value="{{ email|default('') }}" placeholder="name@example.com">
+    <button class="btn primary block" type="submit">{{ t('إرسال رابط الاستعادة') }}</button>
+  </form>
+{% endif %}
+{% endblock %}

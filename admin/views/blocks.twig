@@ -1,0 +1,38 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('مكتبة الكتل') }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ t('مكتبة الكتل (Blocks)') }}</h1><span class="muted small">{{ t('كتل قابلة لإعادة الاستخدام تضيفها في المصمم، وتتحدّث في كل مكان تُستخدم فيه.') }}</span></div></div>
+<div class="grid-2 blocks-intro">
+  <div class="card">
+    <h3>{{ icon('layers', 18) }} {{ t('كتلة من المصمم') }}</h3>
+    <p class="muted small">{{ t('صمّم كتلة (بطاقة، قسم، تذييل…) بنفس المصمم، وارفقها بنوع محتوى لتُربط حقوله، ثم أضفها لأي تصميم من تبويب «الكتل».') }}</p>
+    <form method="post" action="{{ url('/admin/blocks/new') }}">
+      {{ csrf_field() }}
+      <div class="grid-2"><div><label>{{ t('اسم الكتلة') }}</label><input name="name" required></div>
+      <div><label>{{ t('بيانات الربط (اختياري)') }}</label><select name="type"><option value="">{{ t('بدون (نصوص ثابتة)') }}</option>{% for ty in types %}<option value="{{ ty.slug }}">{{ ty.plural }}</option>{% endfor %}</select></div></div>
+      <button class="btn primary" type="submit">{{ icon('plus', 16) }} {{ t('إنشاء وفتح المصمم') }}</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>{{ icon('site', 18) }} {{ t('كتلة من الموقع المستورد') }}</h3>
+    <p class="muted small">{{ t('في صفحة «معاينة وربط»: انقر بالزر الأيمن على أي عنصر ثم «حفظ ككتلة».') }}</p>
+    <a class="btn" href="{{ url('/admin/site') }}">{{ icon('site', 16) }} {{ t('الواجهة') }}</a>
+  </div>
+</div>
+<table class="table cards">
+  <thead><tr><th>{{ t('الكتلة') }}</th><th>{{ t('المصدر') }}</th><th>{{ t('الربط') }}</th><th></th></tr></thead>
+  <tbody>
+  {% for b in blocks %}
+    <tr>
+      <td data-label="{{ t('الكتلة') }}"><strong>{{ b.title }}</strong></td>
+      <td data-label="{{ t('المصدر') }}"><span class="badge">{{ b.kind == 'siteblock' ? t('الموقع') : t('المصمم') }}</span></td>
+      <td data-label="{{ t('الربط') }}">{{ b.type ? b.type : '—' }}</td>
+      <td class="actions">
+        {% if b.edit_url %}<a class="btn sm primary" href="{{ b.edit_url }}">{% if b.kind == 'block' %}{{ icon('brush', 15) }} {{ t('تعديل في المصمم') }}{% else %}{{ icon('cursor', 15) }} {{ t('تعديل (معاينة وربط)') }}{% endif %}</a>{% endif %}
+        <form method="post" action="{{ url('/admin/blocks/' ~ b.id ~ '/delete') }}" data-confirm="{{ t('حذف الكتلة؟ ستختفي من التصاميم التي تستخدمها.') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ icon('trash', 15) }}</button></form>
+      </td>
+    </tr>
+  {% else %}<tr><td colspan="4" class="muted center">{{ t('لا توجد كتل بعد.') }}</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.twig' %}
+{% block content %}
+<h1>{{ type.plural }}{% if query is defined and query %}: «{{ query }}»{% endif %}</h1>
+<div class="grid">
+  {% for item in items %}
+    {% include 'partials/card.twig' %}
+  {% else %}
+    <p class="muted">{{ t('لا توجد نتائج.') }}</p>
+  {% endfor %}
+</div>
+{% if pager.pages > 1 %}
+<nav class="pager" aria-label="{{ t('الصفحات') }}">
+  {% for n in 1..pager.pages %}
+    <a href="{{ base_url }}?page={{ n }}" class="{{ n == pager.page ? 'on' }}">{{ n|ar_digits }}</a>
+  {% endfor %}
+</nav>
+{% endif %}
+{% endblock %}

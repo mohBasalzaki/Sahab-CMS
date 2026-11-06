@@ -1,0 +1,34 @@
+{% extends 'layout.twig' %}
+{% block title %}Webhooks{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Webhooks</h1></div>
+<p class="muted">{{ t('يرسل النظام طلب POST بصيغة JSON إلى الرابط عند وقوع الحدث، مع ترويسة') }} <code dir="ltr">X-Sahab-Event</code> {{ t('وتوقيع HMAC-SHA256 في') }} <code dir="ltr">X-Sahab-Signature</code> {{ t('إن حددت سراً.') }}</p>
+<form method="post" action="{{ url('/admin/webhooks') }}" class="card">
+  {{ csrf_field() }}
+  <h2>{{ icon('plus', 17) }} {{ t('Webhook جديد') }}</h2>
+  <div class="grid-2">
+    <div><label>{{ t('الاسم') }}</label><input name="name" required></div>
+    <div><label>URL (https://…)</label><input name="url" type="url" dir="ltr" required></div>
+    <div><label>{{ t('السر (اختياري)') }}</label><input name="secret" dir="ltr" autocomplete="off"></div>
+  </div>
+  <label>{{ t('الأحداث') }}</label>
+  <div class="checks">{% for ev in events %}<label class="check"><input type="checkbox" name="events[]" value="{{ ev }}"> <code>{{ ev }}</code></label>{% endfor %}</div>
+  <button class="btn primary" type="submit">{{ t('إنشاء') }}</button>
+</form>
+<table class="table cards">
+  <thead><tr><th>{{ t('الاسم') }}</th><th>URL</th><th>{{ t('الأحداث') }}</th><th></th></tr></thead>
+  <tbody>
+  {% for h in hooks %}
+    <tr>
+      <td data-label="{{ t('الاسم') }}"><strong>{{ h.name }}</strong> <span class="badge {{ h.enabled ? 'published' : 'draft' }}">{{ h.enabled ? 'on' : 'off' }}</span></td>
+      <td data-label="URL" dir="ltr" class="ltr-cell mono">{{ h.url }}</td>
+      <td data-label="{{ t('الأحداث') }}" class="mono small">{{ h.events }}</td>
+      <td class="actions">
+        <form method="post" action="{{ url('/admin/webhooks/' ~ h.id ~ '/toggle') }}">{{ csrf_field() }}<button class="btn sm" type="submit">{{ h.enabled ? t('تعطيل') : t('تفعيل') }}</button></form>
+        <form method="post" action="{{ url('/admin/webhooks/' ~ h.id ~ '/delete') }}" data-confirm="{{ t('حذف؟') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ t('حذف') }}</button></form>
+      </td>
+    </tr>
+  {% else %}<tr><td colspan="4" class="muted center">{{ t('لا توجد Webhooks.') }}</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

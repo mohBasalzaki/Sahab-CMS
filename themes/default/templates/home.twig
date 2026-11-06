@@ -1,0 +1,16 @@
+{% extends 'base.twig' %}
+{% block content %}
+<section class="hero">
+  <h1>{{ site.title }}</h1>
+  {% if site.description %}<p>{{ site.description }}</p>{% endif %}
+</section>
+{% for ty in types() %}
+  {% if ty.kind == 'collection' %}
+    {% set rows = entries(ty.slug, {limit: 6}) %}
+    {% if rows %}
+      <h2 class="sec">{{ ty.plural }}</h2>
+      <div class="grid">{% for p in rows %}{% include 'partials/card.twig' with {item: p} %}{% endfor %}</div>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% endblock %}

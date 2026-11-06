@@ -1,0 +1,30 @@
+{% extends 'layout.twig' %}
+{% block title %}{{ t('الأدوار والصلاحيات') }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>{{ t('الأدوار والصلاحيات') }}</h1></div>
+<p class="muted">{{ t('مصفوفة صلاحيات على طريقة Strapi: لكل دور وكل نوع محتوى (عرض، إنشاء، تعديل، حذف، نشر). دور «عام» يتحكم بما يراه الزوار عبر الـ API.') }}</p>
+<table class="table cards">
+  <thead><tr><th>{{ t('الدور') }}</th><th>{{ t('الوصف') }}</th><th>{{ t('المستخدمون') }}</th><th></th></tr></thead>
+  <tbody>
+  {% for r in roles %}
+    <tr>
+      <td data-label="{{ t('الدور') }}"><strong>{{ t(r.name) }}</strong> <code dir="ltr">{{ r.slug }}</code></td>
+      <td data-label="{{ t('الوصف') }}">{{ t(r.description) }}</td>
+      <td data-label="{{ t('المستخدمون') }}">{{ r.users }}</td>
+      <td class="actions">
+        {% if r.slug != 'admin' %}<a class="btn sm" href="{{ url('/admin/roles/' ~ r.slug) }}">{{ t('تعديل الصلاحيات') }}</a>{% endif %}
+        {% if not r.is_system %}<form method="post" action="{{ url('/admin/roles/' ~ r.slug ~ '/delete') }}" data-confirm="{{ t('حذف الدور؟') }}">{{ csrf_field() }}<button class="btn sm danger" type="submit">{{ t('حذف') }}</button></form>{% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<form method="post" action="{{ url('/admin/roles/new') }}" class="card narrow">
+  {{ csrf_field() }}
+  <h2>{{ icon('plus', 17) }} {{ t('دور جديد') }}</h2>
+  <label>{{ t('الاسم') }}</label><input name="name" required>
+  <label>{{ t('المعرّف (إنجليزي)') }}</label><input name="slug" dir="ltr" pattern="[a-z0-9_\-]+">
+  <label>{{ t('الوصف') }}</label><input name="description">
+  <button class="btn primary block" type="submit">{{ t('إنشاء') }}</button>
+</form>
+{% endblock %}

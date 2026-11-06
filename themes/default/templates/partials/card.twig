@@ -1,0 +1,8 @@
+<article class="card">
+  {% if item.cover %}<a href="{{ item.url }}"><img src="{{ item.cover.thumb }}" alt="{{ item.cover.alt|default(item.title) }}" loading="lazy"></a>{% endif %}
+  <div class="card-body">
+    <h3><a href="{{ item.url }}">{{ item.title }}</a></h3>
+    {% if item.published_at %}<time class="muted">{{ item.published_at|ar_date }}</time>{% endif %}
+    <p>{{ (item.summary|default(item.body|default('')))|excerpt(140) }}</p>
+  </div>
+</article>

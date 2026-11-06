@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="{{ site.lang }}" dir="{{ site.dir }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ title }}{% if title != site.title %} — {{ site.title }}{% endif %}{% endblock %}</title>
+<meta name="description" content="{% block description %}{{ site.description }}{% endblock %}">
+<link rel="stylesheet" href="{{ asset('style.css') }}">
+{% block head %}{% endblock %}
+{{ hook('head') }}
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="{{ site.url }}"><span class="mono">[</span> {{ site.title }} <span class="mono">]</span></a>
+    <input type="checkbox" id="mt" class="mt"><label for="mt" class="burger" aria-label="{{ t('القائمة') }}">☰</label>
+    <nav class="menu" aria-label="{{ t('الرئيسية') }}">
+      {% for i in menu('main') %}<a href="{{ i.url }}" class="{{ i.active ? 'on' }}">{{ i.label }}</a>{% endfor %}
+    </nav>
+    <form action="{{ url('/search') }}" class="search" role="search"><input type="search" name="q" placeholder="{{ t('بحث...') }}" aria-label="{{ t('بحث') }}"></form>
+  </div>
+</header>
+{% block main %}<main class="wrap">{% block content %}{% endblock %}</main>{% endblock %}
+<footer class="site-footer">
+  <div class="wrap">
+    <nav>{% for i in menu('footer') %}<a href="{{ i.url }}">{{ i.label }}</a> {% endfor %}</nav>
+    <p>© {{ 'now'|date('Y')|ar_digits }} {{ site.title }} · {{ t('مبني بنظام') }} <a href="https://github.com/" rel="noopener">{{ t('سحاب CMS') }}</a>{% if site.user %} · <a href="{{ site.admin_url }}">{{ t('لوحة التحكم') }}</a>{% endif %}</p>
+  </div>
+</footer>
+{{ hook('footer') }}
+</body>
+</html>
